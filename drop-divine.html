@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DROP DIVINE · BLESSAINT</title>
+    <meta name="description" content="DROP DIVINE: as camisetas oversized da BLESSAINT, streetwear gospel brasileiro.">
+
+    <!-- Ícone da aba do navegador (a cruz da marca) -->
+    <link rel="icon" href="img/cruz-branca.png">
+
+    <!-- Fonte Montserrat do Google Fonts (a mais parecida com o logo da marca) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ================================================================ */
+        /* ===== PADRÃO DO SITE: este bloco é IGUAL nas 4 páginas ===== */
+        /* ================================================================ */
+
+        /* ===== BASE DA PÁGINA ===== */
+        body {
+            background-color: #111111;
+            color: #BDB8AC;
+            font-family: 'Montserrat', Arial, sans-serif;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Os links seguem a cor creme da marca */
+        a {
+            color: #F2EDE0;
+        }
+
+        /* Nenhuma imagem passa da largura da tela (celular) */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ===== TOPO: menu + logo, flutuando POR CIMA da foto da capa ===== */
+        .topo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        /* ===== MENU ===== */
+        .menu {
+            padding: 20px;
+            border-bottom: 1px solid rgba(242, 237, 224, 0.15);
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li {
+            display: inline-block;
+            margin: 4px 0;
+        }
+
+        .menu a {
+            text-decoration: none;
+            margin: 0 12px;
+            position: relative;
+            padding-bottom: 6px;
+            transition: letter-spacing 0.3s, color 0.3s;
+        }
+
+        /* A linha escondida embaixo de cada item do menu */
+        .menu a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #F2EDE0;
+            transition: width 0.3s, left 0.3s;
+        }
+
+        /* Mouse em cima (ou página atual): a linha cresce do centro pra fora */
+        .menu a:hover::after,
+        .menu a.ativo::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* Mouse em cima: as letras se afastam um pouquinho */
+        .menu a:hover {
+            letter-spacing: 5px;
+            color: #FFFFFF;
+        }
+
+        /* ===== LOGO ===== */
+        .logo {
+            display: inline-block;
+            margin-top: 26px;
+        }
+
+        .logo img {
+            width: 290px;
+            max-width: 60vw;
+            display: block;
+        }
+
+        /* ===== CAPA: a mesma em todas as páginas (só muda a foto e o texto) ===== */
+        /* A caixa da capa: as outras camadas se posicionam dentro dela */
+        .capa {
+            position: relative;
+            height: 88vh;
+            min-height: 620px;
+            overflow: hidden;
+        }
+
+        /* A foto: preto e branco, com zoom lento que vai e volta */
+        .capa-foto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            object-position: var(--pc, center);
+            filter: grayscale(1) brightness(0.75);
+            transition: filter 0.8s;
+            animation: capa-zoom 14s ease-in-out infinite alternate;
+        }
+
+        /* O zoom: começa no tamanho normal e cresce 12% */
+        @keyframes capa-zoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.12);
+            }
+        }
+
+        /* Mouse em cima da capa: a foto ganha cor */
+        .capa:hover .capa-foto {
+            filter: grayscale(0) brightness(0.8);
+        }
+
+        /* A camada escura: escura em cima (pro menu aparecer) e embaixo (pro texto) */
+        .capa-escuro {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(17, 17, 17, 0.85) 0%,
+                    rgba(17, 17, 17, 0) 32%,
+                    rgba(17, 17, 17, 0) 45%,
+                    rgba(17, 17, 17, 0.85) 78%,
+                    #111111 100%);
+        }
+
+        /* Os textos ficam por cima de tudo, embaixo e no centro */
+        .capa-texto {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 56px;
+            padding: 0 20px;
+        }
+
+        .capa-mini {
+            color: #F2EDE0;
+            font-size: 12px;
+            letter-spacing: 8px;
+            margin: 0 0 14px;
+        }
+
+        /* O título da página (o h1) mora dentro da capa */
+        .capa-titulo {
+            color: #F2EDE0;
+            font-size: 42px;
+            font-style: italic;
+            font-weight: 900;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        /* A faixa #USEBLESSAINT: vidro transparente com um brilho que passa de tempos em tempos */
+        .capa-faixa {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            margin-top: 16px;
+            padding: 7px 16px;
+            background-color: rgba(242, 237, 224, 0.08);
+            border: 1px solid rgba(242, 237, 224, 0.35);
+            backdrop-filter: blur(4px);
+            color: #F2EDE0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 5px;
+        }
+
+        /* O brilho: uma faixa de luz inclinada que atravessa a etiqueta */
+        .capa-faixa::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(242, 237, 224, 0.45), transparent);
+            transform: skewX(-20deg);
+            animation: brilho 4s ease-in-out infinite;
+        }
+
+        @keyframes brilho {
+            0% {
+                left: -60%;
+            }
+
+            40%,
+            100% {
+                left: 130%;
+            }
+        }
+
+        .capa-texto .botao {
+            margin-top: 22px;
+        }
+
+        /* frase pequena embaixo do botão (ex.: atendimento humanizado) */
+        .capa-nota {
+            font-size: 13px;
+            margin: 10px auto 0;
+            max-width: 340px;
+            line-height: 1.5;
+        }
+
+        /* ===== BOTÃO PADRÃO (opção C: linha e seta) — o mesmo em todas as páginas ===== */
+        .botao {
+            display: inline-block;
+            position: relative;
+            margin-top: 50px;
+            padding: 14px 4px;
+            color: #F2EDE0;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-decoration: none;
+        }
+
+        /* A linha embaixo: começa curta (40%) */
+        .botao::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            bottom: 6px;
+            width: 40%;
+            height: 1px;
+            background-color: #F2EDE0;
+            transition: width 0.35s;
+        }
+
+        /* A seta depois do texto */
+        .botao::after {
+            content: "→";
+            display: inline-block;
+            margin-left: 10px;
+            transition: transform 0.35s;
+        }
+
+        /* Mouse em cima: a linha cresce até o fim... */
+        .botao:hover::before {
+            width: calc(100% - 8px);
+        }
+
+        /* ...e a seta anda pra frente */
+        .botao:hover::after {
+            transform: translateX(8px);
+        }
+
+
+        /* ===== ÍCONES DAS REDES SOCIAIS ===== */
+        .icone {
+            width: 1.1em;
+            height: 1.1em;
+            vertical-align: -0.2em;
+            margin-right: 6px;
+        }
+
+        .redes {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+            margin-bottom: 18px;
+        }
+
+        .redes a {
+            color: #F2EDE0;
+            font-size: 20px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .redes .icone {
+            margin: 0;
+        }
+
+        /* Mouse em cima: o ícone pula e clareia */
+        .redes a:hover {
+            transform: translateY(-4px) scale(1.1);
+            color: #FFFFFF;
+        }
+
+        /* ===== BOTÃO DE MÚSICA (canto da tela) ===== */
+        .musica {
+            display: none;
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 50;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 1px solid rgba(242, 237, 224, 0.5);
+            background-color: rgba(17, 17, 17, 0.75);
+            backdrop-filter: blur(6px);
+            color: #F2EDE0;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .musica.pronto {
+            display: block;
+        }
+
+        .musica .icone {
+            margin: 0;
+        }
+
+        /* Tocando: o botão "pulsa" devagar */
+        .musica.tocando {
+            animation: pulsar 1.6s ease-in-out infinite;
+        }
+
+        @keyframes pulsar {
+            50% {
+                box-shadow: 0 0 0 10px rgba(242, 237, 224, 0);
+                transform: scale(1.06);
+            }
+        }
+
+        .musica-janela {
+            display: none;
+            position: fixed;
+            right: 20px;
+            bottom: 84px;
+            z-index: 50;
+            width: 320px;
+            max-width: calc(100vw - 40px);
+        }
+
+        .musica-janela.aberta {
+            display: block;
+        }
+
+        /* ===== ENFEITES: anjos dourados, transparentes e flutuando ===== */
+        /* a página nunca rola pro lado, mas os enfeites não são cortados */
+        body {
+            overflow-x: clip;
+        }
+
+        .com-enfeite {
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        .enfeite {
+            position: absolute;
+            z-index: 0;
+            max-width: 34vw;
+            height: auto;
+            opacity: 0.24;
+            pointer-events: none;
+            animation: flutuar 7s ease-in-out infinite;
+        }
+
+        /* cada anjo flutua num ritmo diferente */
+        .enfeite.devagar {
+            animation-duration: 9s;
+        }
+
+        .enfeite.rapido {
+            animation-duration: 5.5s;
+            animation-delay: -2s;
+        }
+
+        @keyframes flutuar {
+            50% {
+                transform: translateY(-14px) rotate(-2deg);
+            }
+        }
+
+        /* ===== O CORAÇÃO: encostado na borda, parado e batendo a 70 bpm ===== */
+        .enfeite.na-borda {
+            right: 0;
+            max-width: 42vw;
+            opacity: 0.38;
+            transform-origin: right center;
+        }
+
+        /* 70 batidas por minuto = uma batida a cada 0,857 segundo (60 ÷ 70) */
+        .enfeite.batendo {
+            animation: batida 0.857s ease-in-out infinite;
+        }
+
+        @keyframes batida {
+            0%,
+            40%,
+            100% {
+                transform: scale(1);
+            }
+
+            12% {
+                transform: scale(1.1);
+            }
+
+            26% {
+                transform: scale(1.04);
+            }
+        }
+
+        /* O texto fica sempre na frente do enfeite */
+        .com-enfeite > *:not(.enfeite) {
+            position: relative;
+            z-index: 1;
+        }
+
+
+
+
+        /* ===== STATUS DO PRODUTO: bolinha + palavra ===== */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #FFFFFF;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .status i {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        /* disponível: verde, piscando devagar */
+        .st-disponivel i {
+            background-color: #3DDC84;
+            box-shadow: 0 0 8px #3DDC84;
+            animation: piscar 2s ease-in-out infinite;
+        }
+
+        /* lançamento: laranja, piscando devagar */
+        .st-lancamento i {
+            background-color: #FF8A1F;
+            box-shadow: 0 0 8px #FF8A1F;
+            animation: piscar 2s ease-in-out infinite;
+        }
+
+        /* esgotado: vermelha, parada, e a palavra riscada de vermelho */
+        .st-esgotado i {
+            background-color: #E5383B;
+        }
+
+        .st-esgotado {
+            text-decoration: line-through;
+            text-decoration-color: #E5383B;
+            text-decoration-thickness: 2px;
+        }
+
+        @keyframes piscar {
+            50% {
+                opacity: 0.35;
+            }
+        }
+
+        /* selo LANÇAMENTO no canto do card */
+        .selo {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            z-index: 2;
+            background-color: #F2EDE0;
+            color: #111111;
+            font-size: 10px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 1px;
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+
+        /* botão desligado (produto esgotado) */
+        .botao.desligado {
+            pointer-events: none;
+            color: #E5383B;
+            text-decoration: line-through;
+        }
+
+        .botao.desligado::before,
+        .botao.desligado::after {
+            display: none;
+        }
+
+
+        /* ===== LINHA DE STATUS (uma ou duas etiquetas) ===== */
+        .status-linha {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            margin-top: 8px;
+        }
+
+        /* ===== COMO COMPRAR: 4 passos em caixinhas ===== */
+        .passos {
+            list-style: none;
+            padding: 0 20px;
+            margin: 10px auto 0;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            text-align: left;
+        }
+
+        .passos li {
+            border: 1px solid #2A2A28;
+            background-color: #111111;
+            padding: 24px 20px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .passos li:hover {
+            border-color: #F2EDE0;
+            transform: translateY(-4px);
+        }
+
+        .passo-num {
+            display: block;
+            color: #F2EDE0;
+            font-size: 32px;
+            font-weight: 900;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .passos b {
+            color: #F2EDE0;
+            letter-spacing: 1px;
+        }
+
+        .passos p {
+            margin: 8px 0 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ===== GUIA DA PEÇA: tamanhos + cuidados ===== */
+        .guia {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            max-width: 900px;
+            margin: 10px auto 0;
+            padding: 0 20px;
+        }
+
+        .guia-bloco {
+            border: 1px solid #2A2A28;
+            background-color: #111111;
+            padding: 26px 22px;
+        }
+
+        .guia-titulo {
+            color: #F2EDE0;
+            font-weight: 700;
+            letter-spacing: 4px;
+            font-size: 12px;
+            margin: 0 0 18px;
+        }
+
+        .tamanhos {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tamanhos li {
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            border: 1px solid rgba(242, 237, 224, 0.4);
+            color: #F2EDE0;
+            font-weight: 700;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .tamanhos li:hover {
+            background-color: #F2EDE0;
+            color: #111111;
+        }
+
+        .guia-nota {
+            font-size: 13px;
+            margin: 18px 0 0;
+        }
+
+        .cuidados {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        .cuidados li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #2A2A28;
+        }
+
+        .cuidados li:last-child {
+            border-bottom: 0;
+        }
+
+        .cuidados span {
+            color: #F2EDE0;
+            font-weight: 900;
+            font-style: italic;
+        }
+
+
+        /* ===== CHAMAS nos cards de LANÇAMENTO: o primeiro foguinho, subindo do pé do card ===== */
+        .chamas {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 75%;
+            z-index: 0;
+            overflow: hidden;
+            border-radius: inherit;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            opacity: 0.55;
+            -webkit-mask: linear-gradient(to top, #000 15%, transparent 95%);
+            mask: linear-gradient(to top, #000 15%, transparent 95%);
+        }
+
+        /* duas camadas de fogo, cada uma num ritmo, pra parecer chama de verdade */
+        .chamas::before,
+        .chamas::after {
+            content: "";
+            position: absolute;
+            left: -10%;
+            right: -10%;
+            bottom: -10%;
+            height: 110%;
+            transform-origin: bottom center;
+            filter: blur(7px);
+            background:
+                radial-gradient(ellipse 14% 55% at 4% 100%, rgba(255, 150, 40, 0.95), transparent 70%),
+                radial-gradient(ellipse 12% 45% at 18% 100%, rgba(255, 90, 20, 0.8), transparent 70%),
+                radial-gradient(ellipse 10% 30% at 38% 100%, rgba(255, 120, 30, 0.6), transparent 70%),
+                radial-gradient(ellipse 10% 30% at 62% 100%, rgba(255, 120, 30, 0.6), transparent 70%),
+                radial-gradient(ellipse 12% 45% at 82% 100%, rgba(255, 90, 20, 0.8), transparent 70%),
+                radial-gradient(ellipse 14% 55% at 96% 100%, rgba(255, 150, 40, 0.95), transparent 70%);
+            animation: chama 1.7s ease-in-out infinite alternate;
+        }
+
+        .chamas::after {
+            filter: blur(10px);
+            opacity: 0.8;
+            background:
+                radial-gradient(ellipse 10% 65% at 8% 100%, rgba(255, 190, 70, 0.9), transparent 70%),
+                radial-gradient(ellipse 9% 40% at 28% 100%, rgba(255, 110, 25, 0.7), transparent 70%),
+                radial-gradient(ellipse 9% 40% at 72% 100%, rgba(255, 110, 25, 0.7), transparent 70%),
+                radial-gradient(ellipse 10% 65% at 92% 100%, rgba(255, 190, 70, 0.9), transparent 70%);
+            animation-duration: 2.3s;
+            animation-delay: -0.8s;
+        }
+
+        @keyframes chama {
+            0% {
+                transform: translateY(6%) scaleY(0.88) skewX(0deg);
+            }
+
+            50% {
+                transform: translateY(-3%) scaleY(1.1) skewX(3deg);
+            }
+
+            100% {
+                transform: translateY(2%) scaleY(0.95) skewX(-3deg);
+            }
+        }
+
+        /* ===== CONTORNO DE LUZ (usado nos cards) ===== */
+        @property --giro {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        @keyframes contorno {
+            to {
+                --giro: 360deg;
+            }
+        }
+
+
+        /* ===== BOTÃO ATENDIMENTO HUMANIZADO: vivo, pulsando como um coração ===== */
+        .botao-humano {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 16px 30px;
+            border: 1px solid #F2EDE0;
+            border-radius: 40px;
+            background-color: rgba(17, 17, 17, 0.55);
+            backdrop-filter: blur(4px);
+            color: #F2EDE0;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ondas saindo do botão, como um chamado chegando */
+        .botao-humano::before,
+        .botao-humano::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            border: 1px solid rgba(242, 237, 224, 0.7);
+            animation: onda 2.4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        .botao-humano::after {
+            animation-delay: 1.2s;
+        }
+
+        @keyframes onda {
+            from {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            to {
+                transform: scale(1.35, 1.8);
+                opacity: 0;
+            }
+        }
+
+        /* a bolinha verde de "online agora" */
+        .online {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3DDC84;
+            box-shadow: 0 0 10px #3DDC84;
+        }
+
+        .online::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background-color: #3DDC84;
+            animation: online 1.6s ease-out infinite;
+        }
+
+        @keyframes online {
+            to {
+                transform: scale(2.8);
+                opacity: 0;
+            }
+        }
+
+        /* mouse em cima: o botão acende */
+        .botao-humano:hover {
+            background-color: #F2EDE0;
+            color: #111111;
+        }
+
+        /* frase em cima do botão */
+        .capa-chamada {
+            color: #F2EDE0;
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 24px 0 0;
+        }
+
+        .capa-chamada + .botao-humano {
+            margin-top: 12px;
+        }
+
+        /* ===== FRASES DE AJUDA (padrão): pequenas, espaçadas e "respirando" ===== */
+        .dica {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 10px 0 30px;
+            animation: respirar 2.8s ease-in-out infinite;
+        }
+
+        /* O efeito: a frase acende e apaga bem devagar */
+        @keyframes respirar {
+            0%,
+            100% {
+                opacity: 0.45;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ===== TÍTULOS DE SEÇÃO ===== */
+        h2 {
+            color: #F2EDE0;
+            font-size: 22px;
+            font-style: italic;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-top: 80px;
+        }
+
+        .slogan {
+            color: #F2EDE0;
+            font-size: 26px;
+            font-style: italic;
+            font-weight: 900;
+            margin: 40px 20px 6px;
+        }
+
+        /* ===== TEXTOS ===== */
+        .texto {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+            line-height: 1.7;
+        }
+
+        em {
+            color: #F2EDE0;
+        }
+
+        ol {
+            list-style-position: inside;
+        }
+
+        /* ===== RODAPÉ ===== */
+        .rodape {
+            margin-top: 80px;
+            padding: 36px 20px 30px;
+            border-top: 1px solid #2A2A28;
+            font-size: 13px;
+        }
+
+        /* ===== CELULAR: capa mais baixa e textos menores ===== */
+        @media (max-width: 700px) {
+            .capa {
+                height: 80vh;
+                min-height: 560px;
+            }
+
+            .capa-titulo {
+                font-size: 28px;
+            }
+
+            /* no celular a foto fica em pé: escolhe a parte da foto que aparece */
+            .capa-foto {
+                object-position: var(--celular, center);
+            }
+
+            /* menu numa linha só: letra menor e itens mais juntos */
+            .menu {
+                padding: 14px 4px;
+                font-size: 10px;
+                letter-spacing: 2px;
+            }
+
+            .menu a {
+                margin: 0 5px;
+            }
+
+            .menu a:hover {
+                letter-spacing: 2px;
+            }
+
+            .logo {
+                margin-top: 18px;
+            }
+
+            .logo img {
+                width: 210px;
+            }
+
+            h2 {
+                margin-top: 60px;
+            }
+
+            .enfeite {
+                opacity: 0.14;
+            }
+
+            /* no celular o Instagram do menu vira só o ícone */
+            .so-pc {
+                display: none;
+            }
+
+            .menu .icone {
+                margin: 0;
+                width: 1.4em;
+                height: 1.4em;
+            }
+
+            h2 {
+                letter-spacing: 2px;
+                padding: 0 12px;
+            }
+        }
+
+        /* ===== CELULAR (tela de toque): troca "passe o mouse" por "toque" ===== */
+        .no-toque {
+            display: none;
+        }
+
+        @media (hover: none) {
+            .no-mouse {
+                display: none;
+            }
+
+            .no-toque {
+                display: inline;
+            }
+        }
+
+        /* ================================================================ */
+        /* ===== DAQUI PRA BAIXO: o que é só desta página ===== */
+        /* ================================================================ */
+        /* ===== VITRINE EM GRADE ===== */
+        /* "grid" monta colunas automáticas: cabem quantas der na tela */
+        .vitrine {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .produto h3 {
+            color: #F2EDE0;
+            font-size: 15px;
+            letter-spacing: 1px;
+            margin: 14px 0 4px;
+        }
+
+        .preco {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* ===== EFEITO FRENTE -> COSTAS ===== */
+        /* A caixa da foto guarda as duas imagens, uma em cima da outra */
+        .foto {
+            position: relative;
+            margin: 0;
+        }
+
+        .foto img {
+            display: block;
+            width: 100%;
+        }
+
+        /* A foto das costas fica por cima, mas invisível (opacity: 0) */
+        .foto .costas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        /* Quando o mouse passa em cima (:hover), as costas aparecem */
+        .foto:hover .costas {
+            opacity: 1;
+        }
+
+
+        /* ===== CARDS DA COLEÇÃO: contorno de luz que gira em volta ===== */
+        /* Registra a variável do ângulo pra ela poder ser animada */
+        @property --giro {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        .produto {
+            position: relative;
+            padding: 14px 14px 18px;
+            text-align: left;
+            background-color: #161616;
+            border: 1px solid #2A2A28;
+            transition: transform 0.4s, border-color 0.4s;
+        }
+
+        /* O contorno de luz: um "cometa" creme que corre pela borda */
+        .produto::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            padding: 1px;
+            background: conic-gradient(from var(--giro), transparent 0deg, transparent 250deg, #F2EDE0 330deg, transparent 360deg);
+            /* a máscara deixa aparecer só a borda (1px), o meio fica vazio */
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+            animation: contorno 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes contorno {
+            to {
+                --giro: 360deg;
+            }
+        }
+
+        /* Mouse em cima: o card sobe um pouco e a luz aparece correndo na borda */
+        .produto:hover {
+            transform: translateY(-6px);
+            border-color: transparent;
+        }
+
+        .produto:hover::before {
+            opacity: 1;
+        }
+
+        /* o conteúdo do card fica na frente das chamas */
+        .produto > figure,
+        .produto > h3,
+        .produto > p,
+        .produto > .status-linha {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== CELULAR: 2 peças por linha ===== */
+        @media (max-width: 700px) {
+            .vitrine {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                padding: 0 12px;
+            }
+
+            .produto {
+                padding: 8px 8px 12px;
+            }
+
+            .produto h3 {
+                font-size: 12px;
+            }
+
+            .preco {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPO: menu + logo (ficam por cima da foto da capa) -->
+    <header class="topo">
+        <nav class="menu">
+            <ul>
+                <li><a href="index.html">INÍCIO</a></li>
+                <li><a href="sobre.html">SOBRE</a></li>
+                <li><a href="drop-divine.html" class="ativo">DROP DIVINE</a></li>
+                <li><a href="contato.html">CONTATO</a></li>
+                <li><a href="https://www.instagram.com/useblessaint/" target="_blank"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg><span class="so-pc">INSTAGRAM</span></a></li>
+            </ul>
+        </nav>
+        <a class="logo" href="index.html"><img src="img/logo-blessaint-branco.png" alt="BLESSAINT"></a>
+    </header>
+
+    <main>
+
+        <!-- ===== CAPA (padrão das 4 páginas) ===== -->
+        <section class="capa">
+            <img class="capa-foto" src="img/blessaint-capa-hd-2.jpg" alt="Mulher vestindo camiseta BLESSAINT branca sentada na pista de skate" style="--pc: center 40%; --celular: 58% center;">
+            <div class="capa-escuro"></div>
+            <div class="capa-texto">
+                <p class="capa-mini">BLESSAINT · DROP DIVINE</p>
+                <h1 class="capa-titulo">O drop que carrega a mensagem.</h1>
+                <span class="capa-faixa">#USEBLESSAINT</span>
+                <br>
+                <a class="botao" href="#pecas">VER AS PEÇAS</a>
+            </div>
+        </section>
+
+        <!-- ===== COLEÇÃO ===== -->
+        <section id="pecas" class="com-enfeite">
+            <img class="enfeite devagar" src="img/enfeites/anjo-arco.png" alt="" style="width: 170px; right: 3%; top: 0;">
+            <img class="enfeite rapido" src="img/enfeites/anjo-voando.png" alt="" style="width: 200px; left: 2%; top: 10px;">
+            <h2>AS PEÇAS</h2>
+            <p class="dica"><span class="no-mouse">Passe o mouse na peça para ver as costas</span><span class="no-toque">Toque na peça para ver as costas</span></p>
+
+            <div class="vitrine">
+
+                <!-- FREEDOM CREME -->
+                <article class="produto lancamento">
+                    <div class="chamas"></div>
+                    <span class="selo">LANÇAMENTO</span>
+                    <figure class="foto">
+                        <img src="img/freedom-creme-frente.jpg" alt="Camiseta Freedom creme, frente">
+                        <img class="costas" src="img/freedom-creme-costas.jpg" alt="Camiseta Freedom creme, costas">
+                    </figure>
+                    <h3>Oversized Freedom Creme</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-lancamento"><i></i>Lançamento</div><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- FREEDOM LILÁS -->
+                <article class="produto lancamento">
+                    <div class="chamas"></div>
+                    <span class="selo">LANÇAMENTO</span>
+                    <figure class="foto">
+                        <img src="img/freedom-lilas-frente.jpg" alt="Camiseta Freedom lilás, frente">
+                        <img class="costas" src="img/freedom-lilas-costas.jpg" alt="Camiseta Freedom lilás, costas">
+                    </figure>
+                    <h3>Oversized Freedom Lilás</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-lancamento"><i></i>Lançamento</div><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- FREEDOM PRETA -->
+                <article class="produto lancamento">
+                    <div class="chamas"></div>
+                    <span class="selo">LANÇAMENTO</span>
+                    <figure class="foto">
+                        <img src="img/freedom-preta-frente.jpg" alt="Camiseta Freedom preta, frente">
+                        <img class="costas" src="img/freedom-preta-costas.jpg" alt="Camiseta Freedom preta, costas">
+                    </figure>
+                    <h3>Oversized Freedom Preta</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-lancamento"><i></i>Lançamento</div><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- MULTIPLICAÇÃO -->
+                <article class="produto">
+                    <figure class="foto">
+                        <img src="img/multiplicacao-preta-frente.jpg" alt="Camiseta Multiplicação preta, frente">
+                        <img class="costas" src="img/multiplicacao-preta-costas.jpg"
+                            alt="Camiseta Multiplicação preta, costas">
+                    </figure>
+                    <h3>Oversized Multiplicação</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- VOCÊ NÃO É TODO MUNDO -->
+                <article class="produto">
+                    <figure class="foto">
+                        <img src="img/voce-nao-e-todo-mundo-creme-frente.jpg"
+                            alt="Camiseta Você Não É Todo Mundo creme, frente">
+                        <img class="costas" src="img/voce-nao-e-todo-mundo-creme-costas.jpg"
+                            alt="Camiseta Você Não É Todo Mundo creme, costas">
+                    </figure>
+                    <h3>Oversized Você Não É Todo Mundo</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- ANOTHER IN THE FIRE -->
+                <article class="produto">
+                    <figure class="foto">
+                        <img src="img/another-in-the-fire-preta-frente.jpg"
+                            alt="Camiseta Another in the Fire preta, frente">
+                        <img class="costas" src="img/another-in-the-fire-preta-costas.jpg"
+                            alt="Camiseta Another in the Fire preta, costas">
+                    </figure>
+                    <h3>Oversized Another in the Fire</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- NUVENS -->
+                <article class="produto">
+                    <figure class="foto">
+                        <img src="img/nuvens-creme-frente.jpg" alt="Camiseta Nuvens creme, frente">
+                        <img class="costas" src="img/nuvens-creme-costas.jpg" alt="Camiseta Nuvens creme, costas">
+                    </figure>
+                    <h3>Oversized Nuvens Creme</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-disponivel"><i></i>Disponível</div></div>
+                </article>
+
+                <!-- LOGO LILÁS -->
+                <article class="produto esgotado">
+                    <figure class="foto">
+                        <img src="img/boxlogo-lilas-frente.jpg" alt="Camiseta Logo lilás, frente">
+                        <img class="costas" src="img/boxlogo-lilas-costas.jpg" alt="Camiseta Logo lilás, costas">
+                    </figure>
+                    <h3>Oversized Logo Lilás</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-esgotado"><i></i>Esgotado</div></div>
+                </article>
+
+                <!-- LOGO BRANCA -->
+                <article class="produto esgotado">
+                    <figure class="foto">
+                        <img src="img/boxlogo-preta-frente.jpg" alt="Camiseta Logo branca, frente">
+                        <img class="costas" src="img/boxlogo-preta-costas.jpg" alt="Camiseta Logo branca, costas">
+                    </figure>
+                    <h3>Oversized Logo Branca</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-esgotado"><i></i>Esgotado</div></div>
+                </article>
+
+                <!-- LOGO BRANCA MINIMALISTA -->
+                <article class="produto esgotado">
+                    <figure class="foto">
+                        <img src="img/logo-peito-preta-frente.jpg" alt="Camiseta Logo branca minimalista, frente">
+                        <img class="costas" src="img/logo-peito-preta-costas.jpg"
+                            alt="Camiseta Logo branca minimalista, costas">
+                    </figure>
+                    <h3>Oversized Logo Branca Minimalista</h3>
+                    <p class="preco">R$ 109,90</p>
+                    <div class="status-linha"><div class="status st-esgotado"><i></i>Esgotado</div></div>
+                </article>
+
+            </div>
+
+            <!-- LINK DE COMPRA -->
+            <a class="botao" href="https://linktr.ee/blessaint" target="_blank">COMPRAR AGORA</a>
+
+        </section>
+
+        <!-- ===== COMO COMPRAR: 4 passos ===== -->
+        <section class="com-enfeite">
+            <img class="enfeite rapido" src="img/enfeites/anjo-selo.png" alt="" style="width: 170px; left: 3%; top: 0;">
+            <h2>COMO COMPRAR</h2>
+            <p class="dica">Simples, rápido e com gente de verdade do outro lado</p>
+            <ol class="passos">
+                <li>
+                    <span class="passo-num">01</span>
+                    <b>Escolha sua peça</b>
+                    <p>Navegue pelo DROP DIVINE e veja frente e costas de cada modelo.</p>
+                </li>
+                <li>
+                    <span class="passo-num">02</span>
+                    <b>Clique em comprar</b>
+                    <p>Toque em <strong>COMPRAR AGORA</strong> e você vai direto pro nosso Linktree.</p>
+                </li>
+                <li>
+                    <span class="passo-num">03</span>
+                    <b>Finalize o pedido</b>
+                    <p>Escolha o tamanho e a forma de pagamento que preferir.</p>
+                </li>
+                <li>
+                    <span class="passo-num">04</span>
+                    <b>Atendimento na hora</b>
+                    <p>Um dos nossos vendedores te atenderá no mesmo instante.</p>
+                </li>
+            </ol>
+            <a class="botao" href="https://linktr.ee/blessaint" target="_blank">COMPRAR AGORA</a>
+        </section>
+
+        <!-- ===== GUIA DA PEÇA ===== -->
+        <section class="com-enfeite">
+            <img class="enfeite devagar" src="img/enfeites/anjo-voando.png" alt="" style="width: 210px; right: 3%; top: 0;">
+            <img class="enfeite" src="img/enfeites/anjo-pedestal.png" alt="" style="width: 190px; left: 3%; bottom: 0;">
+            <h2>GUIA DA PEÇA</h2>
+            <p class="dica">Tamanhos e cuidados pra sua peça durar muito mais</p>
+
+            <div class="guia">
+                <div class="guia-bloco">
+                    <p class="guia-titulo">TAMANHOS DISPONÍVEIS</p>
+                    <ul class="tamanhos">
+                        <li>P</li>
+                        <li>M</li>
+                        <li>G</li>
+                        <li>GG</li>
+                    </ul>
+                    <p class="guia-nota">Modelagem oversized. Ficou em dúvida no tamanho?
+                        <a href="contato.html">Fale com a gente</a>.</p>
+                </div>
+
+                <div class="guia-bloco">
+                    <p class="guia-titulo">COMO LAVAR</p>
+                    <ol class="cuidados">
+                        <li><span>01</span>Vire a peça do avesso</li>
+                        <li><span>02</span>Lave à mão com água fria</li>
+                        <li><span>03</span>Seque à sombra</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ: redes sociais + direitos -->
+    <footer class="rodape">
+        <div class="redes">
+            <a href="https://www.instagram.com/useblessaint/" target="_blank" aria-label="Instagram" title="Instagram"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+            <a href="https://linktr.ee/blessaint" target="_blank" aria-label="Loja" title="Loja"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m13.73635 5.85251 4.00467-4.11665 2.3248 2.3808-4.20064 4.00466h5.9085v3.30473h-5.9365l4.22865 4.10766-2.3248 2.3338L12.0005 12.099l-5.74052 5.76852-2.3248-2.3248 4.22864-4.10766h-5.9375V8.12132h5.9085L3.93417 4.11666l2.3248-2.3808 4.00468 4.11665V0h3.4727zm-3.4727 10.30614h3.4727V24h-3.4727z"/></svg></a>
+            <a href="#whatsapp" aria-label="WhatsApp" title="WhatsApp"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+            <a href="#tiktok" aria-label="TikTok" title="TikTok"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+            <a href="#facebook" aria-label="Facebook" title="Facebook"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+        </div>
+        <p>© 2026 BLESSAINT · Bênção + Santa · Marca brasileira de streetwear</p>
+    </footer>
+
+    <!-- ===== BOTÃO DE MÚSICA (Spotify) ===== -->
+    <button class="musica" id="musica" aria-label="Ouvir a playlist BLESSAINT" title="Ouvir a vibe BLESSAINT">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    </button>
+    <div class="musica-janela" id="musica-janela"></div>
+
+    <script>
+
+        /* >>> TROQUE AQUI: cole o link da playlist do Spotify entre as aspas <<<
+           Exemplo: 'https://open.spotify.com/playlist/xxxxxxxx'
+           Enquanto estiver vazio, o botão de música fica escondido. */
+        const PLAYLIST_SPOTIFY = '';
+
+        const botaoMusica = document.getElementById('musica');
+        const janelaMusica = document.getElementById('musica-janela');
+        if (PLAYLIST_SPOTIFY) {
+            botaoMusica.classList.add('pronto');
+            botaoMusica.addEventListener('click', function () {
+                if (!janelaMusica.innerHTML) {
+                    const embed = PLAYLIST_SPOTIFY.replace('open.spotify.com/', 'open.spotify.com/embed/');
+                    janelaMusica.innerHTML = '<iframe src="' + embed + '?theme=0" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+                }
+                janelaMusica.classList.toggle('aberta');
+                botaoMusica.classList.toggle('tocando');
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>
