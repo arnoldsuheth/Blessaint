@@ -1238,20 +1238,16 @@
             }
         }
 
-        /* Celular (sem mouse): a capa ganha cor sozinha, devagar, e volta */
+        /* Celular (sem mouse): a capa acende rápido sozinha e continua colorida */
         @media (hover: none) {
             .capa-foto {
                 animation: capa-zoom 14s ease-in-out infinite alternate,
-                    capa-cor 9s ease-in-out 1.2s infinite alternate;
+                    capa-cor 1.4s ease-out 0.4s forwards;
             }
         }
 
         @keyframes capa-cor {
             from {
-                filter: grayscale(1) brightness(0.75);
-            }
-
-            35% {
                 filter: grayscale(1) brightness(0.75);
             }
 
@@ -1676,17 +1672,34 @@
 
     <script id="musica-script">
         (function () {
-            /* >>> A PLAYLIST: troque o código depois de "playlist/" no link do Spotify <<< */
-            const PLAYLIST = '0U98zAOTxbGciIlfI70pUP';
+            /* >>> AS MÚSICAS (da playlist TRAP GOSPEL 🇧🇷 2026): o código de cada faixa do Spotify <<< */
+            const FAIXAS = ['5kkHPzZDXCVFBz1SlJurmW', '6sda9tGuHDYfcq4hmUClh8', '7oV6AEXq4Hcut3QD6D5rBB',
+                '68gwW1g6BCB5yvnLr59bTF', '0kqXv4y60p6xqppA7aLV3i', '2ppf3yjN6Z46uHoPXNIOpL', '3v9n6j3Vu7YVTbJCNc16Tl',
+                '0UhZ7mH5b4sMPnqyWO7HLz', '1eHM4hibE6Kcv2KRNP4tYq', '0k74j2XdPschdiUuFH1irD', '7KEGwfGpSZGDxaH5TH69DC',
+                '2dhIDexkVJQik8kzjBcrZd', '3zSJaVOG3CScUJ4UdPi6IN', '5OiEEBJxTob9k6RWdPbb9v', '7yDpnr91TkMNfFEVZdynrT',
+                '41UOPlYbkLEVr9J0EayDCP', '7vE5H1OHVJ3vDeKyJlv61K', '3VYaIt0YgMlaTS6QOhNtF8', '3KL9lBS4jKJJyJvEfh74aD',
+                '7tSI0qlhyFJ4Ji9ksuMdth', '6zh9j4mNVztiBuwmaC0RdR', '78LdRsvfvQ43WScLolnhD9', '0zo8OjkNOKj4eIZZrMiy9E',
+                '0HC8kh6xCPMmMm7PKI9L4S', '71G8uuCGM0viQIoydWbktX', '1oGBeJjyAQltNxdRUfADCl', '2ZcTXrVa5bnxgAwrZbqjHp',
+                '02MeXEKEmNKyPY1pnvOdnn', '3CkZRDRAZN8QvHZrwfxf9c', '6An28xutr1Dq3Llb9kB4Yt', '6ewNksa6eYIc6SKmb9JFWB',
+                '5Nc1FAkLKaoW3zAInVGcmR', '08WE3QGkm7aFRZjtxUoJym', '6pn8UkB7vFhHtAFhmWwnP9'];
+
+            /* Embaralha as faixas: cada visita começa numa música diferente */
+            const fila = FAIXAS.slice();
+            for (let i = fila.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [fila[i], fila[j]] = [fila[j], fila[i]];
+            }
+            let posicao = 0;          /* qual faixa da fila está tocando */
+            let tocouAlgo = false;    /* a faixa atual já começou a tocar? */
+            let trocando = false;     /* está carregando a próxima faixa? */
 
             const player = document.getElementById('player');
             const painel = document.getElementById('player-painel');
             let controle = null;      /* o "controle remoto" do Spotify */
             let tocando = false;
 
-            /* O visitante desligou a música antes? Respeita a escolha dele. */
+            /* Toda visita começa querendo tocar; só para se o visitante pausar */
             let desligou = false;
-            try { desligou = localStorage.getItem('blessaint-musica') === 'off'; } catch (e) { }
 
             function marcar(estaTocando) {
                 tocando = estaTocando;
@@ -1697,13 +1710,29 @@
             /* 1) Carrega o player do Spotify e tenta tocar sozinho */
             window.onSpotifyIframeApiReady = function (API) {
                 API.createController(document.getElementById('player-spotify'),
-                    { uri: 'spotify:playlist:' + PLAYLIST, width: '100%', height: 152 },
+                    { uri: 'spotify:track:' + fila[0], width: '100%', height: 152 },
                     function (c) {
                         controle = c;
-                        c.addListener('playback_update', function (e) { marcar(!e.data.isPaused); });
+                        c.addListener('playback_update', function (e) {
+                            const d = e.data;
+                            if (!d.isPaused) { tocouAlgo = true; trocando = false; }
+                            /* a faixa acabou sozinha? então vai pra próxima da fila */
+                            const acabou = d.isPaused && d.duration > 0 &&
+                                (d.position === 0 || d.position >= d.duration - 1500);
+                            if (tocouAlgo && acabou && !desligou && !trocando) { proxima(); return; }
+                            if (!trocando) marcar(!d.isPaused);
+                        });
                         c.addListener('ready', function () { if (!desligou) c.play(); });
                     });
             };
+            function proxima() {
+                trocando = true;
+                tocouAlgo = false;
+                posicao = (posicao + 1) % fila.length;
+                controle.loadUri('spotify:track:' + fila[posicao]);
+                setTimeout(function () { controle.play(); }, 800);
+            }
+
             const api = document.createElement('script');
             api.src = 'https://open.spotify.com/embed/iframe-api/v1';
             api.async = true;
@@ -1722,7 +1751,6 @@
             document.getElementById('player-tocar').addEventListener('click', function () {
                 if (!controle) return;
                 desligou = tocando;   /* se estava tocando, o visitante quis parar */
-                try { localStorage.setItem('blessaint-musica', desligou ? 'off' : 'on'); } catch (e) { }
                 controle.togglePlay();
             });
 
