@@ -529,7 +529,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 6px 14px;
-            margin-top: 8px;
+            margin: 8px 0 14px;
         }
 
         /* ===== COMO COMPRAR: 4 passos em caixinhas ===== */
@@ -829,6 +829,123 @@
 
         .capa-chamada + .botao-humano {
             margin-top: 12px;
+        }
+
+
+        /* ===== BOTÃO COMPRAR embaixo de cada card ===== */
+        .comprar {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding: 12px 14px;
+            overflow: hidden;
+            border: 1px solid rgba(242, 237, 224, 0.45);
+            color: #F2EDE0;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-decoration: none;
+            transition: color 0.35s, border-color 0.35s, box-shadow 0.35s;
+        }
+
+        /* o verde enche o botão da esquerda pra direita */
+        .comprar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #12A150, #3DDC84);
+            transition: width 0.35s ease;
+            z-index: -1;
+        }
+
+        /* um brilho que passa por cima do verde */
+        .comprar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+            transform: skewX(-20deg);
+            opacity: 0;
+        }
+
+        .comprar .carrinho {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .comprar:hover {
+            color: #FFFFFF;
+            border-color: #3DDC84;
+            box-shadow: 0 0 18px rgba(61, 220, 132, 0.55);
+        }
+
+        .comprar:hover::before {
+            width: 100%;
+        }
+
+        .comprar:hover::after {
+            opacity: 1;
+            animation: brilho-verde 1.2s ease-in-out infinite;
+        }
+
+        @keyframes brilho-verde {
+            from {
+                left: -60%;
+            }
+
+            to {
+                left: 130%;
+            }
+        }
+
+        /* o carrinho dá um pulinho */
+        .comprar:hover .carrinho {
+            animation: pulinho 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulinho {
+            from {
+                transform: translateY(0) rotate(0);
+            }
+
+            to {
+                transform: translateY(-3px) rotate(-8deg);
+            }
+        }
+
+        /* no card 3D da vitrine, o botão é menor */
+        .v360-card .comprar {
+            margin-top: 8px;
+            padding: 6px 8px;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+
+        .v360-card .comprar .carrinho {
+            width: 13px;
+            height: 13px;
+        }
+
+        /* esgotado: botão parado, palavra riscada em vermelho */
+        .comprar.desligado {
+            justify-content: center;
+            border-color: #2A2A28;
+            color: #BDB8AC;
+            text-decoration: line-through;
+            text-decoration-color: #E5383B;
+            text-decoration-thickness: 2px;
+            pointer-events: none;
         }
 
         /* ===== FRASES DE AJUDA (padrão): pequenas, espaçadas e "respirando" ===== */
