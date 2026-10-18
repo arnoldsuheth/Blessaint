@@ -319,88 +319,204 @@
             color: #FFFFFF;
         }
 
-        /* ===== BOTÃO DE MÚSICA (canto da tela) ===== */
-        .musica {
-            display: none;
+        /* ===== PLAYER DE MÚSICA (canto de cima, fixo em todas as páginas) ===== */
+        .player {
             position: fixed;
-            right: 20px;
-            bottom: 20px;
-            z-index: 50;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            border: 1px solid rgba(242, 237, 224, 0.5);
-            background-color: rgba(17, 17, 17, 0.75);
-            backdrop-filter: blur(6px);
+            top: 14px;
+            right: 18px;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(242, 237, 224, 0.28);
+            background-color: rgba(17, 17, 17, 0.72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: #F2EDE0;
-            font-size: 22px;
-            cursor: pointer;
+            font-size: 10px;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
         }
 
-        .musica.pronto {
-            display: block;
+        /* A logo do Spotify, na cor oficial */
+        .player-logo {
+            display: flex;
+            color: #1DB954;
         }
 
-        .musica .icone {
+        .player-logo .icone {
+            width: 20px;
+            height: 20px;
             margin: 0;
         }
 
-        /* Tocando: o botão "pulsa" devagar */
-        .musica.tocando {
-            animation: pulsar 1.6s ease-in-out infinite;
+        /* As barrinhas do equalizador: só dançam quando está tocando */
+        .player-eq {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
         }
 
-        @keyframes pulsar {
-            50% {
-                box-shadow: 0 0 0 10px rgba(242, 237, 224, 0);
-                transform: scale(1.06);
+        .player-eq i {
+            width: 3px;
+            height: 4px;
+            border-radius: 2px;
+            background-color: #F2EDE0;
+            opacity: 0.6;
+        }
+
+        .player.tocando .player-eq i {
+            opacity: 1;
+            animation: eq 0.9s ease-in-out infinite alternate;
+        }
+
+        .player.tocando .player-eq i:nth-child(2) {
+            animation-delay: -0.3s;
+        }
+
+        .player.tocando .player-eq i:nth-child(3) {
+            animation-delay: -0.6s;
+        }
+
+        @keyframes eq {
+            from {
+                height: 3px;
+            }
+
+            to {
+                height: 14px;
             }
         }
 
-        .musica-janela {
-            display: none;
-            position: fixed;
-            right: 20px;
-            bottom: 84px;
-            z-index: 50;
-            width: 320px;
-            max-width: calc(100vw - 40px);
+        .player-nome {
+            white-space: nowrap;
         }
 
-        .musica-janela.aberta {
+        /* Os botões redondos: tocar/pausar e abrir a lista */
+        .player button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .player-tocar {
+            background-color: #F2EDE0;
+            color: #111111;
+        }
+
+        .player-tocar:hover {
+            transform: scale(1.08);
+        }
+
+        .player-tocar svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Mostra o ícone certo: ▶ parado, ❚❚ tocando */
+        .player .ic-pausar,
+        .player.tocando .ic-tocar {
+            display: none;
+        }
+
+        .player.tocando .ic-pausar {
             display: block;
         }
 
-        /* A faixa em cima do player, com o X de desligar */
-        .musica-topo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background-color: rgba(17, 17, 17, 0.9);
-            border: 1px solid #2A2A28;
-            border-bottom: none;
-            border-radius: 12px 12px 0 0;
-            font-size: 10px;
-            letter-spacing: 2px;
+        .player-lista {
+            background-color: transparent;
+            color: #BDB8AC;
+            font-size: 14px;
+        }
+
+        .player-lista:hover {
             color: #F2EDE0;
         }
 
-        .musica-fechar {
-            background: none;
-            border: none;
-            color: #BDB8AC;
-            font-size: 14px;
-            cursor: pointer;
+        .player.aberto .player-lista {
+            transform: rotate(180deg);
         }
 
-        .musica-fechar:hover {
-            color: #E5383B;
+        /* Ainda não começou: um anel chama o visitante pro play */
+        .player.esperando .player-tocar {
+            animation: chamar-play 1.8s ease-out infinite;
         }
 
-        .musica-janela iframe {
+        @keyframes chamar-play {
+            from {
+                box-shadow: 0 0 0 0 rgba(242, 237, 224, 0.6);
+            }
+
+            to {
+                box-shadow: 0 0 0 12px rgba(242, 237, 224, 0);
+            }
+        }
+
+        /* A lista de músicas do Spotify: abre embaixo do player */
+        .player-painel {
+            position: fixed;
+            top: 64px;
+            right: 18px;
+            z-index: 60;
+            width: 320px;
+            max-width: calc(100vw - 24px);
+            border-radius: 12px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+        }
+
+        .player-painel.aberto {
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+        }
+
+        .player-painel iframe {
             display: block;
-            border-radius: 0 0 12px 12px;
+        }
+
+        /* Celular: o player fica compacto, embaixo do menu */
+        @media (max-width: 700px) {
+            .player {
+                top: 56px;
+                right: 10px;
+                gap: 6px;
+                padding: 4px 4px 4px 9px;
+            }
+
+            /* só a logo (abre a lista) e o play: assim não encosta no logo da marca */
+            .player-nome,
+            .player-eq,
+            .player-lista {
+                display: none !important;
+            }
+
+            .player-logo {
+                cursor: pointer;
+            }
+
+            .player button {
+                width: 30px;
+                height: 30px;
+            }
+
+            .player-painel {
+                top: 100px;
+                right: 10px;
+            }
         }
 
         /* ===== ENFEITES: anjos dourados, transparentes e flutuando ===== */
@@ -1122,6 +1238,28 @@
             }
         }
 
+        /* Celular (sem mouse): a capa ganha cor sozinha, devagar, e volta */
+        @media (hover: none) {
+            .capa-foto {
+                animation: capa-zoom 14s ease-in-out infinite alternate,
+                    capa-cor 9s ease-in-out 1.2s infinite alternate;
+            }
+        }
+
+        @keyframes capa-cor {
+            from {
+                filter: grayscale(1) brightness(0.75);
+            }
+
+            35% {
+                filter: grayscale(1) brightness(0.75);
+            }
+
+            to {
+                filter: grayscale(0) brightness(0.82);
+            }
+        }
+
         /* ================================================================ */
         /* ===== DAQUI PRA BAIXO: o que é só desta página ===== */
         /* ================================================================ */
@@ -1272,43 +1410,125 @@
         <p>© 2026 BLESSAINT · Bênção + Santa · Marca brasileira de streetwear</p>
     </footer>
 
-    <!-- ===== BOTÃO DE MÚSICA (Spotify) ===== -->
-    <button class="musica" id="musica" aria-label="Ouvir a playlist BLESSAINT" title="Ouvir a vibe BLESSAINT">
-        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-    </button>
-    <div class="musica-janela" id="musica-janela"></div>
+    <!-- ===== PLAYER DE MÚSICA (Spotify): fica fixo e não para ao trocar de página ===== -->
+    <div class="player esperando" id="player">
+        <span class="player-logo" title="Spotify"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></span>
+        <span class="player-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="player-nome">TRAP GOSPEL</span>
+        <button class="player-tocar" id="player-tocar" aria-label="Tocar a playlist"><svg class="ic-tocar" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pausar" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg></button>
+        <button class="player-lista" id="player-lista" aria-label="Ver as músicas">&#9662;</button>
+    </div>
+    <div class="player-painel" id="player-painel"><div id="player-spotify"></div></div>
 
-    <script>
+    <script id="musica-script">
+        (function () {
+            /* >>> A PLAYLIST: troque o código depois de "playlist/" no link do Spotify <<< */
+            const PLAYLIST = '0U98zAOTxbGciIlfI70pUP';
 
-        /* >>> TROQUE AQUI: cole o link da playlist do Spotify entre as aspas <<<
-           Exemplo: 'https://open.spotify.com/playlist/xxxxxxxx'
-           Enquanto estiver vazio, o botão de música fica escondido. */
-        const PLAYLIST_SPOTIFY = 'https://open.spotify.com/playlist/0U98zAOTxbGciIlfI70pUP';
+            const player = document.getElementById('player');
+            const painel = document.getElementById('player-painel');
+            let controle = null;      /* o "controle remoto" do Spotify */
+            let tocando = false;
 
-        const botaoMusica = document.getElementById('musica');
-        const janelaMusica = document.getElementById('musica-janela');
-        if (PLAYLIST_SPOTIFY) {
-            botaoMusica.classList.add('pronto');
-            /* Clicar na bolinha: abre o player (ou esconde, e a música continua) */
-            botaoMusica.addEventListener('click', function () {
-                if (!janelaMusica.innerHTML) {
-                    const embed = PLAYLIST_SPOTIFY.replace('open.spotify.com/', 'open.spotify.com/embed/');
-                    janelaMusica.innerHTML =
-                        '<div class="musica-topo"><span>TRAP GOSPEL · VIBE BLESSAINT</span>' +
-                        '<button class="musica-fechar" id="musica-fechar" aria-label="Desligar a música" title="Desligar">✕</button></div>' +
-                        '<iframe src="' + embed + '?theme=0" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
-                    /* O X desliga de verdade: apaga o player e a música para */
-                    document.getElementById('musica-fechar').addEventListener('click', function () {
-                        janelaMusica.innerHTML = '';
-                        janelaMusica.classList.remove('aberta');
-                        botaoMusica.classList.remove('tocando');
+            /* O visitante desligou a música antes? Respeita a escolha dele. */
+            let desligou = false;
+            try { desligou = localStorage.getItem('blessaint-musica') === 'off'; } catch (e) { }
+
+            function marcar(estaTocando) {
+                tocando = estaTocando;
+                player.classList.toggle('tocando', estaTocando);
+                if (estaTocando) player.classList.remove('esperando');
+            }
+
+            /* 1) Carrega o player do Spotify e tenta tocar sozinho */
+            window.onSpotifyIframeApiReady = function (API) {
+                API.createController(document.getElementById('player-spotify'),
+                    { uri: 'spotify:playlist:' + PLAYLIST, width: '100%', height: 152 },
+                    function (c) {
+                        controle = c;
+                        c.addListener('playback_update', function (e) { marcar(!e.data.isPaused); });
+                        c.addListener('ready', function () { if (!desligou) c.play(); });
                     });
-                    botaoMusica.classList.add('tocando');
-                }
-                janelaMusica.classList.toggle('aberta');
-            });
-        }
+            };
+            const api = document.createElement('script');
+            api.src = 'https://open.spotify.com/embed/iframe-api/v1';
+            api.async = true;
+            document.body.appendChild(api);
 
+            /* 2) Se o navegador bloqueou o som, começa no primeiro toque ou clique na página */
+            function primeiroToque(e) {
+                if (desligou || tocando || !controle || player.contains(e.target)) return;
+                controle.play();
+            }
+            ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+                document.addEventListener(ev, primeiroToque, { passive: true });
+            });
+
+            /* 3) Botão ▶ / ❚❚ */
+            document.getElementById('player-tocar').addEventListener('click', function () {
+                if (!controle) return;
+                desligou = tocando;   /* se estava tocando, o visitante quis parar */
+                try { localStorage.setItem('blessaint-musica', desligou ? 'off' : 'on'); } catch (e) { }
+                controle.togglePlay();
+            });
+
+            /* 4) Setinha: mostra ou esconde a lista de músicas */
+            function lista() {
+                painel.classList.toggle('aberto');
+                player.classList.toggle('aberto');
+            }
+            document.getElementById('player-lista').addEventListener('click', lista);
+            player.querySelector('.player-logo').addEventListener('click', lista);   /* no celular, a logo abre a lista */
+
+            /* 5) NAVEGAÇÃO CONTÍNUA: troca só o conteúdo da página, sem recarregar,
+                  assim a música não para quando o visitante muda de página */
+            const PAGINA = /\/(index|sobre|drop-divine|contato)\.html$|\/$/;
+
+            async function irPara(endereco, novaEntrada) {
+                try {
+                    const resposta = await fetch(endereco);
+                    if (!resposta.ok) throw new Error('falhou');
+                    const nova = new DOMParser().parseFromString(await resposta.text(), 'text/html');
+
+                    document.title = nova.title;
+                    document.head.querySelector('style').textContent = nova.head.querySelector('style').textContent;
+                    const desc = nova.querySelector('meta[name="description"]');
+                    if (desc) document.querySelector('meta[name="description"]').content = desc.content;
+
+                    ['header.topo', 'main', 'footer.rodape'].forEach(function (parte) {
+                        document.querySelector(parte).replaceWith(document.importNode(nova.querySelector(parte), true));
+                    });
+
+                    /* roda os scripts da página nova (a vitrine 360, por exemplo) */
+                    document.querySelectorAll('script[data-pagina]').forEach(function (s) { s.remove(); });
+                    nova.querySelectorAll('body > script:not(#musica-script)').forEach(function (s) {
+                        const roda = document.createElement('script');
+                        roda.dataset.pagina = '1';
+                        roda.textContent = '{\n' + s.textContent + '\n}';
+                        document.body.appendChild(roda);
+                    });
+
+                    if (novaEntrada) history.pushState({}, '', endereco);
+                    const alvo = new URL(endereco).hash;
+                    if (alvo && document.querySelector(alvo)) document.querySelector(alvo).scrollIntoView();
+                    else window.scrollTo(0, 0);
+                } catch (erro) {
+                    location.href = endereco;   /* se algo der errado, abre do jeito normal */
+                }
+            }
+
+            document.addEventListener('click', function (e) {
+                const link = e.target.closest('a');
+                if (!link || link.target || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+                const url = new URL(link.href, location.href);
+                if (url.origin !== location.origin || !PAGINA.test(url.pathname)) return;
+                if (url.pathname === location.pathname && url.hash) return;   /* âncora na mesma página */
+                e.preventDefault();
+                irPara(url.href, true);
+            });
+
+            window.addEventListener('popstate', function () { irPara(location.href, false); });
+        })();
     </script>
 
 </body>
