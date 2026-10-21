@@ -1628,6 +1628,75 @@
         })();
     </script>
 
+
+    <!-- BLESSAINT: Google Analytics 4 ativado somente com consentimento -->
+    <style id="bls-analytics-consent-css">
+      #bls-analytics-consent { position:fixed; z-index:99999; bottom:16px; left:16px; right:16px; max-width:620px; margin:auto; padding:19px 21px; border:1px solid #514c42; border-radius:14px; background:#151515; box-shadow:0 10px 40px #000b; color:#f2ede0; text-align:left; font:13px/1.6 Montserrat,Arial,sans-serif; }
+      #bls-analytics-consent strong {display:block; font-size:14px; margin-bottom:5px;}
+      #bls-analytics-consent p {margin:0 0 14px; color:#c8c2b5;}
+      #bls-analytics-consent a {color:#f2ede0; text-decoration:underline;}
+      #bls-analytics-consent .bls-consent-buttons {display:flex; gap:9px; flex-wrap:wrap;}
+      #bls-analytics-consent button {border:1px solid #777063; border-radius:8px; font:700 12px Montserrat,Arial,sans-serif; letter-spacing:.02em; padding:10px 15px; cursor:pointer;}
+      #bls-analytics-accept {background:#23834a; border-color:#23834a!important; color:#fff;}
+      #bls-analytics-decline {background:#212121; color:#f2ede0;}
+      .bls-cookies-link {background:none; border:0; padding:0; color:inherit; font:inherit; cursor:pointer; text-decoration:underline;}
+      @media (max-width:580px) {#bls-analytics-consent{padding:15px;bottom:8px;left:8px;right:8px;}}
+    </style>
+    <script id="bls-analytics-consent-js">
+    (function () {
+      'use strict';
+      var key = 'blessaint_analytics_consent_v1';
+      var measurementId = 'G-2C2C48HTJD';
+      var analyticsStarted = false;
+      function readChoice() { try { return localStorage.getItem(key); } catch(e) { return null; } }
+      function loadAnalytics() {
+        if (analyticsStarted) return;
+        analyticsStarted = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', measurementId);
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
+        document.head.appendChild(script);
+      }
+      function showChoices() {
+        if (document.getElementById('bls-analytics-consent')) return;
+        var box = document.createElement('div');
+        box.id = 'bls-analytics-consent';
+        box.setAttribute('role', 'dialog');
+        box.setAttribute('aria-label', 'Preferências de privacidade');
+        box.innerHTML = '<strong>Sua privacidade importa.</strong><p>Podemos usar análises de visitas para melhorar a BLESSAINT? Isso é opcional. <a href="politicas.html#privacidade">Saiba mais</a>.</p><div class="bls-consent-buttons"><button id="bls-analytics-accept" type="button">Aceitar análises</button><button id="bls-analytics-decline" type="button">Recusar</button></div>';
+        document.body.appendChild(box);
+        function pick(choice) {
+          var previous = readChoice();
+          try { localStorage.setItem(key, choice); } catch(e) {}
+          box.remove();
+          if (choice === 'accepted') loadAnalytics();
+          else if (previous === 'accepted') window.location.reload();
+        }
+        document.getElementById('bls-analytics-accept').addEventListener('click', function () { pick('accepted'); });
+        document.getElementById('bls-analytics-decline').addEventListener('click', function () { pick('rejected'); });
+      }
+      function addFooterLink() {
+        var footer = document.querySelector('.rodape-links');
+        if (!footer) return;
+        footer.appendChild(document.createTextNode(' · '));
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'bls-cookies-link';
+        button.textContent = 'Cookies';
+        button.setAttribute('aria-label', 'Alterar preferências de análises');
+        button.addEventListener('click', showChoices);
+        footer.appendChild(button);
+      }
+      addFooterLink();
+      if (readChoice() === 'accepted') loadAnalytics();
+      else if (readChoice() !== 'rejected') showChoices();
+    })();
+    </script>
+
 </body>
 
 </html>
