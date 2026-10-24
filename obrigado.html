@@ -1376,14 +1376,15 @@
     <main class="obrigado" style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 20px 60px;">
         <img src="img/enfeites/anjo-voando.png" alt="" style="width:160px;max-width:40vw;margin-bottom:18px;">
         <h1 style="font-style:italic;text-transform:uppercase;margin:0 0 12px;">Pedido recebido.</h1>
-        <p style="max-width:460px;line-height:1.7;opacity:.85;">Obrigado por vestir o que você acredita. Assim que o pagamento for confirmado, separamos sua peça e te chamamos no WhatsApp com o prazo de envio.</p>
+        <p style="max-width:460px;line-height:1.7;opacity:.85;">Obrigado por vestir o que você acredita. <b>Último passo:</b> toque no botão abaixo e mande seu endereço completo no WhatsApp. Assim que o pagamento for confirmado, separamos sua peça e te passamos o prazo de envio.</p>
         <p id="ob-pedido" style="opacity:.6;font-size:13px;"></p>
-        <a class="botao" href="https://wa.me/5527999998911?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20um%20pedido%20no%20site." target="_blank" style="margin-top:18px;">FALAR NO WHATSAPP</a>
+        <a class="botao" id="ob-whats" href="https://wa.me/5527999998911?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20um%20pedido%20no%20site.%20Meu%20endere%C3%A7o%20%C3%A9%3A%20" target="_blank" style="margin-top:18px;">ENVIAR ENDEREÇO NO WHATSAPP</a>
         <a href="drop-divine.html" style="margin-top:16px;color:inherit;opacity:.7;">Voltar para a loja</a>
     </main>
     <script>
         (function () { const q = new URLSearchParams(location.search), n = q.get('order_nsu'), r = q.get('receipt_url');
             if (n) document.getElementById('ob-pedido').innerHTML = 'Pedido ' + n.replace(/[^\w-]/g, '') + (r && /^https:\/\//.test(r) ? ' · <a href="' + encodeURI(r) + '" target="_blank" style="color:inherit">ver comprovante</a>' : '');
+            const w = document.getElementById('ob-whats'); if (n && w) w.href = 'https://wa.me/5527999998911?text=' + encodeURIComponent('Olá! Acabei de fazer o pedido ' + n.replace(/[^\w-]/g, '') + ' no site.\nMeu endereço completo (rua, número, complemento, bairro, cidade, CEP):\n');
             let p = null; try { p = JSON.parse(sessionStorage.getItem('bls-ultimo-pedido') || 'null'); } catch (e) { }
             const valor = p && p.nsu === n ? p.valor : undefined;
             function registrar() {
