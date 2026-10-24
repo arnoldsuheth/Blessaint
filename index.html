@@ -2169,6 +2169,10 @@
             <div class="pg-qtd"><button type="button" data-q="-1" aria-label="Menos">&minus;</button><b id="pg-q">1</b><button type="button" data-q="1" aria-label="Mais">+</button></div>
             <label class="pg-rotulo" for="pg-cep">CEP DE ENTREGA</label>
             <input class="pg-cep" id="pg-cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
+            <label class="pg-rotulo" for="pg-cli">SEU NOME</label>
+            <input class="pg-cep" id="pg-cli" autocomplete="name" maxlength="60" placeholder="Nome e sobrenome">
+            <label class="pg-rotulo" for="pg-tel">SEU WHATSAPP</label>
+            <input class="pg-cep" id="pg-tel" inputmode="tel" autocomplete="tel-national" maxlength="15" placeholder="(27) 99999-9999">
             <div class="pg-soma" id="pg-soma"></div>
             <p class="pg-aviso" id="pg-aviso"></p>
             <button class="pg-pagar comprar" id="pg-pagar" type="button"><span>PAGAR AGORA</span><svg class="carrinho" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 4h2.2l2.3 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3" fill="currentColor"/><circle cx="17" cy="20" r="1.3" fill="currentColor"/></svg></button>
@@ -2197,6 +2201,9 @@
             const gravar = v => { try { localStorage.setItem('bls-cep', v); } catch (e) { } };
             const $ = id => document.getElementById(id);
             const pedido = { nome: '', preco: 0, tam: '', qtd: 1 };
+            const telFmt = v => { const d = (v || '').replace(/\D/g, '').slice(0, 11); return d.length > 6 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(-4) : d.length > 2 ? '(' + d.slice(0, 2) + ') ' + d.slice(2) : d; };
+            const lerCli = () => { try { return JSON.parse(localStorage.getItem('bls-cliente') || '{}'); } catch (e) { return {}; } };
+            const gravarCli = () => { try { localStorage.setItem('bls-cliente', JSON.stringify({ nome: $('pg-cli').value.trim(), tel: $('pg-tel').value })); } catch (e) { } };
 
             function conta() {
                 const cep = so($('pg-cep').value), r = cep.length === 8 ? regiao(cep) : null;
@@ -2206,7 +2213,8 @@
                 h += `<div><span>Frete${r ? ' (' + r.nome + ')' : ''}</span><span>${frete === null ? 'digite o CEP' : frete ? real(frete) : 'GRÁTIS'}</span></div>`;
                 if (frete !== null) h += `<div class="total"><span>Total</span><span>${real(sub + frete)}</span></div>`;
                 $('pg-soma').innerHTML = h;
-                let msg = `Olá! Quero comprar a ${pedido.nome} (${real(pedido.preco)}).\nTamanho: ${pedido.tam || ''}\nQuantidade: ${pedido.qtd}`;
+                const quem = ($('pg-cli') && $('pg-cli').value.trim()) ? ' Sou ' + $('pg-cli').value.trim() + '.' : '';
+                let msg = `Olá!${quem} Quero comprar a ${pedido.nome} (${real(pedido.preco)}).\nTamanho: ${pedido.tam || ''}\nQuantidade: ${pedido.qtd}`;
                 msg += r ? `\n\nCEP ${fmt(cep)} · Frete (${r.nome}): ${frete ? real(frete) : 'GRÁTIS'}\nTotal: ${real(sub + frete)}` : '\n\nMeu CEP é: ';
                 $('pg-whats').href = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg);
                 return { cep, r, sub, frete };
@@ -2216,6 +2224,7 @@
                 $('pg-nome').textContent = nome; $('pg-q').textContent = '1'; $('pg-aviso').textContent = '';
                 document.querySelectorAll('#pg-tams button').forEach(b => b.classList.toggle('ok', b.textContent === pedido.tam));
                 $('pg-cep').value = fmt(ler());
+                const cli = lerCli(); if (cli.nome && !$('pg-cli').value) $('pg-cli').value = cli.nome; if (cli.tel && !$('pg-tel').value) $('pg-tel').value = cli.tel;
                 $('pg-pagar').disabled = false; $('pg-pagar').firstChild.textContent = 'PAGAR AGORA';
                 conta(); $('pg-fundo').classList.add('aberto');
                 if (window.fbq) fbq('track', 'AddToCart', { content_name: nome, currency: 'BRL', value: preco });
@@ -2245,29 +2254,34 @@
                 const b = e.target.closest('button'); if (!b) return;
                 pedido.qtd = Math.min(10, Math.max(1, pedido.qtd + +b.dataset.q)); $('pg-q').textContent = pedido.qtd; conta();
             });
+            $('pg-cli').addEventListener('input', () => { gravarCli(); conta(); });
+            $('pg-tel').addEventListener('input', e => { e.target.value = telFmt(e.target.value); gravarCli(); conta(); });
             $('pg-cep').addEventListener('input', e => { e.target.value = fmt(e.target.value); const c = so(e.target.value); if (c.length === 8) gravar(c); conta(); });
 
             $('pg-pagar').addEventListener('click', async () => {
                 const { cep, r, frete } = conta(), aviso = $('pg-aviso');
                 if (!pedido.tam) { aviso.textContent = 'Escolha o tamanho.'; return; }
                 if (!r) { aviso.textContent = 'Digite um CEP válido para calcular o frete.'; return; }
+                const cliNome = $('pg-cli').value.trim().replace(/\s+/g, ' '), cliTel = $('pg-tel').value.replace(/\D/g, '');
+                if (cliNome.length < 3) { aviso.textContent = 'Digite seu nome.'; $('pg-cli').focus(); return; }
+                if (cliTel.length < 10) { aviso.textContent = 'Digite seu WhatsApp com DDD.'; $('pg-tel').focus(); return; }
                 aviso.textContent = '';
                 const itens = [{ quantity: pedido.qtd, price: Math.round(pedido.preco * 100), description: `${pedido.nome} - Tam. ${pedido.tam}` }];
                 if (frete) itens.push({ quantity: 1, price: Math.round(frete * 100), description: `Frete ${r.nome} (CEP ${fmt(cep)})` });
                 const nsu = 'BLS-' + Date.now().toString(36).toUpperCase();
-                try { fetch(PLANILHA, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: 'pedido', nsu, peca: pedido.nome, tam: pedido.tam, qtd: pedido.qtd, preco: pedido.preco, frete, total: pedido.preco * pedido.qtd + frete, cep: fmt(cep), regiao: r.nome }) }); } catch (e) { }
+                try { fetch(PLANILHA, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: 'pedido', nsu, cliente: cliNome, tel: cliTel, peca: pedido.nome, tam: pedido.tam, qtd: pedido.qtd, preco: pedido.preco, frete, total: pedido.preco * pedido.qtd + frete, cep: fmt(cep), regiao: r.nome }) }); } catch (e) { }
                 const btn = $('pg-pagar'); btn.disabled = true; btn.firstChild.textContent = 'ABRINDO PAGAMENTO...';
                 try {
                     const resp = await fetch('https://api.checkout.infinitepay.io/links', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ handle: HANDLE, order_nsu: nsu, items: itens, redirect_url: location.origin + '/obrigado.html', webhook_url: PLANILHA })
+                        body: JSON.stringify({ handle: HANDLE, order_nsu: nsu, items: itens, redirect_url: location.origin + '/obrigado.html', webhook_url: PLANILHA, customer: { name: cliNome, phone_number: '+55' + cliTel } })
                     });
                     const dados = await resp.json();
                     if (!dados.url) throw new Error(dados.message || 'sem link');
                     if (window.gtag) gtag('event', 'begin_checkout', { currency: 'BRL', value: pedido.preco * pedido.qtd + frete });
                     const valor = pedido.preco * pedido.qtd + frete;
                     if (window.fbq) fbq('track', 'InitiateCheckout', { content_name: pedido.nome, currency: 'BRL', value: valor, num_items: pedido.qtd }, { eventID: nsu + '-ic' });
-                    try { sessionStorage.setItem('bls-ultimo-pedido', JSON.stringify({ nsu, valor, nome: pedido.nome, qtd: pedido.qtd })); } catch (e) { }
+                    try { sessionStorage.setItem('bls-ultimo-pedido', JSON.stringify({ nsu, valor, nome: pedido.nome, qtd: pedido.qtd, tam: pedido.tam, frete, cliente: cliNome.split(' ')[0] })); } catch (e) { }
                     location.href = dados.url;
                 } catch (err) {
                     btn.disabled = false; btn.firstChild.textContent = 'PAGAR AGORA';
