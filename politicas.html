@@ -1424,7 +1424,7 @@
                 <p>Este site não oferece cadastro nem armazena dados de compra em servidor próprio. O CEP que você digita fica salvo só no seu aparelho.</p>
                 <p>Quando você compra pelo WhatsApp, usamos seu nome, telefone e endereço apenas para combinar o pagamento, enviar o pedido e atender você, como prevê a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Não vendemos seus dados.</p>
                 <p>As mensagens enviadas pelo formulário de contato chegam por e-mail e são usadas só para responder você. A música do site é tocada pelo Spotify, que tem a própria política de privacidade. Para pedir a exclusão dos seus dados, fale com a gente no WhatsApp.</p>
-                <p>Com sua autorização, usamos o Google Analytics 4 para entender visitas e páginas acessadas e melhorar o site. Essa medição é opcional: você pode aceitar ou recusar no aviso de privacidade e alterar sua escolha pelo botão “Cookies” no rodapé. O Google pode processar dados técnicos de navegação de acordo com suas políticas.</p>
+                <p>Com sua autorização, usamos o Google Analytics 4 para entender visitas e páginas acessadas e melhorar o site. Essa medição é opcional: você pode aceitar ou recusar no aviso de privacidade e alterar sua escolha pelo botão “Cookies” no rodapé. O Google pode processar dados técnicos de navegação de acordo com suas políticas. Com a mesma autorização, usamos o Pixel da Meta (Facebook e Instagram) para medir visitas, cliques em comprar e compras concluídas e para melhorar nossos anúncios; a Meta trata esses dados conforme a política de privacidade dela. Se você recusar, nada disso é carregado.</p>
                 <p style="font-size:13px;opacity:.7">BLESSAINT · Espírito Santo · Atualizado em outubro de 2026.</p>
             </div>
         </section>
@@ -1664,7 +1664,7 @@
     <script id="bls-analytics-consent-js">
     (function () {
       'use strict';
-      var key = 'blessaint_analytics_consent_v1';
+      var key = 'blessaint_analytics_consent_v2';
       var measurementId = 'G-2C2C48HTJD';
       var analyticsStarted = false;
       function readChoice() { try { return localStorage.getItem(key); } catch(e) { return null; } }
@@ -1675,6 +1675,11 @@
         window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
         window.gtag('js', new Date());
         window.gtag('config', measurementId);
+        /* Meta Pixel (BLESSAINT - Site) - so carrega depois do aceite */
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        window.fbq('init', '1137986662000005');
+        window.fbq('track', 'PageView');
+        document.dispatchEvent(new Event('bls-analytics-ok'));
         var script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
@@ -1686,7 +1691,7 @@
         box.id = 'bls-analytics-consent';
         box.setAttribute('role', 'dialog');
         box.setAttribute('aria-label', 'Preferências de privacidade');
-        box.innerHTML = '<strong>Sua privacidade importa.</strong><p>Podemos usar análises de visitas para melhorar a BLESSAINT? Isso é opcional. <a href="politicas.html#privacidade">Saiba mais</a>.</p><div class="bls-consent-buttons"><button id="bls-analytics-accept" type="button">Aceitar análises</button><button id="bls-analytics-decline" type="button">Recusar</button></div>';
+        box.innerHTML = '<strong>Sua privacidade importa.</strong><p>Podemos usar análises de visitas (Google e Meta) para melhorar a BLESSAINT e nossos anúncios? Isso é opcional. <a href="politicas.html#privacidade">Saiba mais</a>.</p><div class="bls-consent-buttons"><button id="bls-analytics-accept" type="button">Aceitar análises</button><button id="bls-analytics-decline" type="button">Recusar</button></div>';
         document.body.appendChild(box);
         function pick(choice) {
           var previous = readChoice();

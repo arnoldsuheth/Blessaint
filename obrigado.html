@@ -1384,7 +1384,17 @@
     <script>
         (function () { const q = new URLSearchParams(location.search), n = q.get('order_nsu'), r = q.get('receipt_url');
             if (n) document.getElementById('ob-pedido').innerHTML = 'Pedido ' + n.replace(/[^\w-]/g, '') + (r && /^https:\/\//.test(r) ? ' · <a href="' + encodeURI(r) + '" target="_blank" style="color:inherit">ver comprovante</a>' : '');
-            if (window.gtag && n) gtag('event', 'purchase', { transaction_id: n, currency: 'BRL' }); })();
+            let p = null; try { p = JSON.parse(sessionStorage.getItem('bls-ultimo-pedido') || 'null'); } catch (e) { }
+            const valor = p && p.nsu === n ? p.valor : undefined;
+            function registrar() {
+                if (!n || window.__blsCompra) return;
+                try { if (localStorage.getItem('bls-compra-' + n)) return; } catch (e) { }
+                window.__blsCompra = true;
+                if (window.gtag) gtag('event', 'purchase', { transaction_id: n, currency: 'BRL', value: valor });
+                if (window.fbq) fbq('track', 'Purchase', { currency: 'BRL', value: valor || 0, content_name: p && p.nome }, { eventID: n });
+                try { localStorage.setItem('bls-compra-' + n, '1'); } catch (e) { }
+            }
+            if (window.fbq || window.gtag) registrar(); else document.addEventListener('bls-analytics-ok', registrar); })();
     </script>
 
     <!-- RODAPÉ: redes sociais + direitos -->
@@ -1620,7 +1630,7 @@
     <script id="bls-analytics-consent-js">
     (function () {
       'use strict';
-      var key = 'blessaint_analytics_consent_v1';
+      var key = 'blessaint_analytics_consent_v2';
       var measurementId = 'G-2C2C48HTJD';
       var analyticsStarted = false;
       function readChoice() { try { return localStorage.getItem(key); } catch(e) { return null; } }
@@ -1631,6 +1641,11 @@
         window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
         window.gtag('js', new Date());
         window.gtag('config', measurementId);
+        /* Meta Pixel (BLESSAINT - Site) - so carrega depois do aceite */
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        window.fbq('init', '1137986662000005');
+        window.fbq('track', 'PageView');
+        document.dispatchEvent(new Event('bls-analytics-ok'));
         var script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
@@ -1642,7 +1657,7 @@
         box.id = 'bls-analytics-consent';
         box.setAttribute('role', 'dialog');
         box.setAttribute('aria-label', 'Preferências de privacidade');
-        box.innerHTML = '<strong>Sua privacidade importa.</strong><p>Podemos usar análises de visitas para melhorar a BLESSAINT? Isso é opcional. <a href="politicas.html#privacidade">Saiba mais</a>.</p><div class="bls-consent-buttons"><button id="bls-analytics-accept" type="button">Aceitar análises</button><button id="bls-analytics-decline" type="button">Recusar</button></div>';
+        box.innerHTML = '<strong>Sua privacidade importa.</strong><p>Podemos usar análises de visitas (Google e Meta) para melhorar a BLESSAINT e nossos anúncios? Isso é opcional. <a href="politicas.html#privacidade">Saiba mais</a>.</p><div class="bls-consent-buttons"><button id="bls-analytics-accept" type="button">Aceitar análises</button><button id="bls-analytics-decline" type="button">Recusar</button></div>';
         document.body.appendChild(box);
         function pick(choice) {
           var previous = readChoice();
