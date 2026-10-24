@@ -1383,6 +1383,7 @@
     </main>
     <script>
         (function () { const q = new URLSearchParams(location.search), n = q.get('order_nsu'), r = q.get('receipt_url');
+            if (n && q.get('transaction_nsu')) try { fetch('https://script.google.com/macros/s/AKfycbyfUatQCAJ3q9PK5TKXJ7L59So5RMLmdkBOHNCqNHu9PpnOhHDe7HJKtPQ6A1H9OLAW/exec', { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: 'retorno', nsu: n, transaction_nsu: q.get('transaction_nsu'), slug: q.get('slug'), receipt_url: r }) }); } catch (e) { }
             if (n) document.getElementById('ob-pedido').innerHTML = 'Pedido ' + n.replace(/[^\w-]/g, '') + (r && /^https:\/\//.test(r) ? ' · <a href="' + encodeURI(r) + '" target="_blank" style="color:inherit">ver comprovante</a>' : '');
             const w = document.getElementById('ob-whats'); if (n && w) w.href = 'https://wa.me/5527999998911?text=' + encodeURIComponent('Olá! Acabei de fazer o pedido ' + n.replace(/[^\w-]/g, '') + ' no site.\nMeu endereço completo (rua, número, complemento, bairro, cidade, CEP):\n');
             let p = null; try { p = JSON.parse(sessionStorage.getItem('bls-ultimo-pedido') || 'null'); } catch (e) { }

@@ -2004,6 +2004,7 @@
         (function () {
             if (window.pagarBLS) return; window.pagarBLS = true;
             const HANDLE = 'arnold_filipe_go', WHATS = '5527999998911', GRATIS = 299;
+            const PLANILHA = 'https://script.google.com/macros/s/AKfycbyfUatQCAJ3q9PK5TKXJ7L59So5RMLmdkBOHNCqNHu9PpnOhHDe7HJKtPQ6A1H9OLAW/exec'; /* Vendas BLESSAINT (Google Sheets) */
             const real = v => 'R$ ' + v.toFixed(2).replace('.', ',');
             const so = v => (v || '').replace(/\D/g, '').slice(0, 8);
             const fmt = v => { const d = so(v); return d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d; };
@@ -2078,11 +2079,12 @@
                 const itens = [{ quantity: pedido.qtd, price: Math.round(pedido.preco * 100), description: `${pedido.nome} - Tam. ${pedido.tam}` }];
                 if (frete) itens.push({ quantity: 1, price: Math.round(frete * 100), description: `Frete ${r.nome} (CEP ${fmt(cep)})` });
                 const nsu = 'BLS-' + Date.now().toString(36).toUpperCase();
+                try { fetch(PLANILHA, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: 'pedido', nsu, peca: pedido.nome, tam: pedido.tam, qtd: pedido.qtd, preco: pedido.preco, frete, total: pedido.preco * pedido.qtd + frete, cep: fmt(cep), regiao: r.nome }) }); } catch (e) { }
                 const btn = $('pg-pagar'); btn.disabled = true; btn.firstChild.textContent = 'ABRINDO PAGAMENTO...';
                 try {
                     const resp = await fetch('https://api.checkout.infinitepay.io/links', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ handle: HANDLE, order_nsu: nsu, items: itens, redirect_url: location.origin + '/obrigado.html' })
+                        body: JSON.stringify({ handle: HANDLE, order_nsu: nsu, items: itens, redirect_url: location.origin + '/obrigado.html', webhook_url: PLANILHA })
                     });
                     const dados = await resp.json();
                     if (!dados.url) throw new Error(dados.message || 'sem link');
