@@ -1459,7 +1459,7 @@
             <form class="frete-bls" id="frete-bls" autocomplete="postal-code">
                 <label for="cep-bls">CALCULE O FRETE</label>
                 <div class="linha"><input id="cep-bls" inputmode="numeric" maxlength="9" placeholder="Seu CEP" aria-label="Seu CEP"><button type="submit">OK</button></div>
-                <small id="cep-bls-info">Digite seu CEP: o frete entra na mensagem quando você tocar em COMPRAR. Grátis acima de R$ 299.</small>
+                <small id="cep-bls-info">Digite seu CEP: o frete já entra no total quando você tocar em COMPRAR. Grátis acima de R$ 299.</small>
             </form>
             <div class="vitrine">
 
@@ -1950,6 +1950,144 @@
     })();
     </script>
 
+
+    <!-- PAGAMENTO-BLS: InfinitePay (Pix ou cartao) + WhatsApp -->
+    <style id="pagar-bls-css">
+        .pg-fundo { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.72); display: none; align-items: center; justify-content: center; padding: 16px; }
+        .pg-fundo.aberto { display: flex; }
+        .pg-caixa { width: 100%; max-width: 420px; max-height: 92vh; overflow: auto; background: #0d0d0d; color: #F2EDE0; border: 1px solid rgba(242,237,224,.25); border-radius: 18px; padding: 24px 22px; font-family: 'Montserrat', Arial, sans-serif; position: relative; }
+        .pg-fechar { position: absolute; top: 10px; right: 14px; background: none; border: 0; color: #F2EDE0; font-size: 26px; cursor: pointer; }
+        .pg-caixa h4 { margin: 0 0 4px; font-size: 13px; letter-spacing: 3px; color: rgba(242,237,224,.7); }
+        .pg-nome { font-size: 20px; font-weight: 800; font-style: italic; text-transform: uppercase; margin: 0 0 18px; }
+        .pg-rotulo { display: block; font-size: 12px; font-weight: 700; letter-spacing: 3px; margin: 14px 0 8px; }
+        .pg-tams { display: flex; gap: 8px; }
+        .pg-tams button { flex: 1; padding: 11px 0; border-radius: 10px; border: 1px solid rgba(242,237,224,.35); background: transparent; color: #F2EDE0; font: inherit; font-weight: 700; cursor: pointer; }
+        .pg-tams button.ok { background: #F2EDE0; color: #111; }
+        .pg-qtd { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .pg-qtd button { width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(242,237,224,.35); background: transparent; color: #F2EDE0; font-size: 18px; cursor: pointer; }
+        .pg-qtd b { min-width: 20px; text-align: center; font-size: 16px; }
+        .pg-cep { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(242,237,224,.3); background: #111; color: #F2EDE0; }
+        .pg-soma { margin: 18px 0 6px; padding-top: 14px; border-top: 1px solid rgba(242,237,224,.15); font-size: 14px; line-height: 1.9; }
+        .pg-soma div { display: flex; justify-content: space-between; }
+        .pg-soma .total { font-size: 18px; font-weight: 800; color: #C9A45C; }
+        .pg-aviso { min-height: 18px; font-size: 13px; color: #e8a0a0; margin: 6px 0; }
+        .pg-pagar { display: block; width: 100%; padding: 15px; border: 0; border-radius: 12px; background: #C9A45C; color: #111; font: inherit; font-weight: 800; letter-spacing: 2px; cursor: pointer; margin-top: 8px; }
+        .pg-pagar[disabled] { opacity: .6; cursor: wait; }
+        .pg-sub { display: block; text-align: center; font-size: 12px; color: rgba(242,237,224,.6); margin: 8px 0 14px; }
+        .pg-whats { display: block; text-align: center; padding: 12px; border-radius: 12px; border: 1px solid rgba(242,237,224,.35); color: #F2EDE0; text-decoration: none; font-weight: 700; letter-spacing: 2px; font-size: 13px; }
+    </style>
+    <div class="pg-fundo" id="pg-fundo" role="dialog" aria-modal="true" aria-labelledby="pg-nome">
+        <div class="pg-caixa">
+            <button class="pg-fechar" type="button" aria-label="Fechar">&times;</button>
+            <h4>SEU PEDIDO</h4>
+            <p class="pg-nome" id="pg-nome"></p>
+            <span class="pg-rotulo">TAMANHO</span>
+            <div class="pg-tams" id="pg-tams"><button type="button">P</button><button type="button">M</button><button type="button">G</button><button type="button">GG</button></div>
+            <span class="pg-rotulo">QUANTIDADE</span>
+            <div class="pg-qtd"><button type="button" data-q="-1" aria-label="Menos">&minus;</button><b id="pg-q">1</b><button type="button" data-q="1" aria-label="Mais">+</button></div>
+            <label class="pg-rotulo" for="pg-cep">CEP DE ENTREGA</label>
+            <input class="pg-cep" id="pg-cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
+            <div class="pg-soma" id="pg-soma"></div>
+            <p class="pg-aviso" id="pg-aviso"></p>
+            <button class="pg-pagar" id="pg-pagar" type="button">PAGAR AGORA</button>
+            <small class="pg-sub">Pix ou cartão · pagamento seguro pela InfinitePay</small>
+            <a class="pg-whats" id="pg-whats" href="#" target="_blank" rel="noopener">PREFIRO FALAR NO WHATSAPP</a>
+        </div>
+    </div>
+    <script id="pagar-bls">
+        (function () {
+            if (window.pagarBLS) return; window.pagarBLS = true;
+            const HANDLE = 'arnold_filipe_go', WHATS = '5527999998911', GRATIS = 299;
+            const real = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+            const so = v => (v || '').replace(/\D/g, '').slice(0, 8);
+            const fmt = v => { const d = so(v); return d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d; };
+            function regiao(cep) {
+                const n = +cep.slice(0, 5);
+                if ((n >= 29000 && n <= 29189) || (n >= 29200 && n <= 29229)) return { nome: 'Grande Vitória', valor: 10 };
+                if (n >= 29000 && n <= 29999) return { nome: 'Espírito Santo', valor: 18 };
+                if (n >= 1000 && n <= 39999) return { nome: 'Sudeste', valor: 25 };
+                if ((n >= 70000 && n <= 76799) || (n >= 78000 && n <= 99999)) return { nome: 'Sul e Centro-Oeste', valor: 32 };
+                if ((n >= 40000 && n <= 69999) || (n >= 76800 && n <= 77999)) return { nome: 'Norte e Nordeste', valor: 40 };
+                return null;
+            }
+            const ler = () => { try { return localStorage.getItem('bls-cep') || ''; } catch (e) { return ''; } };
+            const gravar = v => { try { localStorage.setItem('bls-cep', v); } catch (e) { } };
+            const $ = id => document.getElementById(id);
+            const pedido = { nome: '', preco: 0, tam: '', qtd: 1 };
+
+            function conta() {
+                const cep = so($('pg-cep').value), r = cep.length === 8 ? regiao(cep) : null;
+                const sub = pedido.preco * pedido.qtd;
+                const frete = r ? (sub >= GRATIS ? 0 : r.valor) : null;
+                let h = `<div><span>Subtotal</span><span>${real(sub)}</span></div>`;
+                h += `<div><span>Frete${r ? ' (' + r.nome + ')' : ''}</span><span>${frete === null ? 'digite o CEP' : frete ? real(frete) : 'GRÁTIS'}</span></div>`;
+                if (frete !== null) h += `<div class="total"><span>Total</span><span>${real(sub + frete)}</span></div>`;
+                $('pg-soma').innerHTML = h;
+                let msg = `Olá! Quero comprar a ${pedido.nome} (${real(pedido.preco)}).\nTamanho: ${pedido.tam || ''}\nQuantidade: ${pedido.qtd}`;
+                msg += r ? `\n\nCEP ${fmt(cep)} · Frete (${r.nome}): ${frete ? real(frete) : 'GRÁTIS'}\nTotal: ${real(sub + frete)}` : '\n\nMeu CEP é: ';
+                $('pg-whats').href = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg);
+                return { cep, r, sub, frete };
+            }
+            function abrir(nome, preco, tam) {
+                Object.assign(pedido, { nome, preco, tam: tam || '', qtd: 1 });
+                $('pg-nome').textContent = nome; $('pg-q').textContent = '1'; $('pg-aviso').textContent = '';
+                document.querySelectorAll('#pg-tams button').forEach(b => b.classList.toggle('ok', b.textContent === pedido.tam));
+                $('pg-cep').value = fmt(ler());
+                $('pg-pagar').disabled = false; $('pg-pagar').textContent = 'PAGAR AGORA';
+                conta(); $('pg-fundo').classList.add('aberto');
+            }
+            const fechar = () => $('pg-fundo').classList.remove('aberto');
+
+            document.addEventListener('click', e => {
+                const a = e.target.closest('a.comprar, #v360-comprar'); if (!a || a.classList.contains('desligado')) return;
+                const card = a.id === 'v360-comprar' ? a.closest('.v360-detalhes') : a.closest('.produto');
+                const precoEl = card && card.querySelector('.preco, .v360-preco');
+                const preco = precoEl ? +precoEl.textContent.replace(/[^\d,]/g, '').replace(',', '.') : 0;
+                const nomeEl = card && card.querySelector('h3');
+                if (!preco || !nomeEl) return;            /* sem preço: segue pro WhatsApp como antes */
+                e.preventDefault(); e.stopPropagation();
+                const nome = 'Oversized ' + nomeEl.textContent.trim().replace(/^Oversized /i, '');
+                const tamOk = card.querySelector('.v360-tamanhos span.ok');
+                abrir(nome, preco, tamOk ? tamOk.textContent.trim() : '');
+            }, false);
+
+            $('pg-fundo').addEventListener('click', e => { if (e.target.id === 'pg-fundo' || e.target.closest('.pg-fechar')) fechar(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') fechar(); });
+            $('pg-tams').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                pedido.tam = b.textContent; document.querySelectorAll('#pg-tams button').forEach(x => x.classList.toggle('ok', x === b)); conta();
+            });
+            document.querySelector('.pg-qtd').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                pedido.qtd = Math.min(10, Math.max(1, pedido.qtd + +b.dataset.q)); $('pg-q').textContent = pedido.qtd; conta();
+            });
+            $('pg-cep').addEventListener('input', e => { e.target.value = fmt(e.target.value); const c = so(e.target.value); if (c.length === 8) gravar(c); conta(); });
+
+            $('pg-pagar').addEventListener('click', async () => {
+                const { cep, r, frete } = conta(), aviso = $('pg-aviso');
+                if (!pedido.tam) { aviso.textContent = 'Escolha o tamanho.'; return; }
+                if (!r) { aviso.textContent = 'Digite um CEP válido para calcular o frete.'; return; }
+                aviso.textContent = '';
+                const itens = [{ quantity: pedido.qtd, price: Math.round(pedido.preco * 100), description: `${pedido.nome} - Tam. ${pedido.tam}` }];
+                if (frete) itens.push({ quantity: 1, price: Math.round(frete * 100), description: `Frete ${r.nome} (CEP ${fmt(cep)})` });
+                const nsu = 'BLS-' + Date.now().toString(36).toUpperCase();
+                const btn = $('pg-pagar'); btn.disabled = true; btn.textContent = 'ABRINDO PAGAMENTO...';
+                try {
+                    const resp = await fetch('https://api.checkout.infinitepay.io/links', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ handle: HANDLE, order_nsu: nsu, items: itens, redirect_url: location.origin + '/obrigado.html' })
+                    });
+                    const dados = await resp.json();
+                    if (!dados.url) throw new Error(dados.message || 'sem link');
+                    if (window.gtag) gtag('event', 'begin_checkout', { currency: 'BRL', value: pedido.preco * pedido.qtd + frete });
+                    location.href = dados.url;
+                } catch (err) {
+                    btn.disabled = false; btn.textContent = 'PAGAR AGORA';
+                    aviso.textContent = 'Não conseguimos abrir o pagamento agora. Toque em WhatsApp que finalizamos por lá.';
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>
