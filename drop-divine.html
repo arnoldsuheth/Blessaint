@@ -1976,7 +1976,8 @@
         .pg-soma div { display: flex; justify-content: space-between; }
         .pg-soma .total { font-size: 18px; font-weight: 800; color: #C9A45C; }
         .pg-aviso { min-height: 18px; font-size: 13px; color: #e8a0a0; margin: 6px 0; }
-        .pg-pagar { display: block; width: 100%; padding: 15px; border: 0; border-radius: 12px; background: #C9A45C; color: #111; font: inherit; font-weight: 800; letter-spacing: 2px; cursor: pointer; margin-top: 8px; }
+        /* PAGAR AGORA = clone do botao COMPRAR da colecao */
+        .pg-pagar.comprar { width: 100%; box-sizing: border-box; margin-top: 8px; background: transparent; font-family: inherit; font-size: 12px; cursor: pointer; }
         .pg-pagar[disabled] { opacity: .6; cursor: wait; }
         .pg-sub { display: block; text-align: center; font-size: 12px; color: rgba(242,237,224,.6); margin: 8px 0 14px; }
         .pg-whats { display: block; text-align: center; padding: 12px; border-radius: 12px; border: 1px solid rgba(242,237,224,.35); color: #F2EDE0; text-decoration: none; font-weight: 700; letter-spacing: 2px; font-size: 13px; }
@@ -1994,7 +1995,7 @@
             <input class="pg-cep" id="pg-cep" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code">
             <div class="pg-soma" id="pg-soma"></div>
             <p class="pg-aviso" id="pg-aviso"></p>
-            <button class="pg-pagar" id="pg-pagar" type="button">PAGAR AGORA</button>
+            <button class="pg-pagar comprar" id="pg-pagar" type="button"><span>PAGAR AGORA</span><svg class="carrinho" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 4h2.2l2.3 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3" fill="currentColor"/><circle cx="17" cy="20" r="1.3" fill="currentColor"/></svg></button>
             <small class="pg-sub">Pix ou cartão · pagamento seguro pela InfinitePay</small>
             <a class="pg-whats" id="pg-whats" href="#" target="_blank" rel="noopener">PREFIRO FALAR NO WHATSAPP</a>
         </div>
@@ -2038,7 +2039,7 @@
                 $('pg-nome').textContent = nome; $('pg-q').textContent = '1'; $('pg-aviso').textContent = '';
                 document.querySelectorAll('#pg-tams button').forEach(b => b.classList.toggle('ok', b.textContent === pedido.tam));
                 $('pg-cep').value = fmt(ler());
-                $('pg-pagar').disabled = false; $('pg-pagar').textContent = 'PAGAR AGORA';
+                $('pg-pagar').disabled = false; $('pg-pagar').firstChild.textContent = 'PAGAR AGORA';
                 conta(); $('pg-fundo').classList.add('aberto');
                 if (window.fbq) fbq('track', 'AddToCart', { content_name: nome, currency: 'BRL', value: preco });
             }
@@ -2077,7 +2078,7 @@
                 const itens = [{ quantity: pedido.qtd, price: Math.round(pedido.preco * 100), description: `${pedido.nome} - Tam. ${pedido.tam}` }];
                 if (frete) itens.push({ quantity: 1, price: Math.round(frete * 100), description: `Frete ${r.nome} (CEP ${fmt(cep)})` });
                 const nsu = 'BLS-' + Date.now().toString(36).toUpperCase();
-                const btn = $('pg-pagar'); btn.disabled = true; btn.textContent = 'ABRINDO PAGAMENTO...';
+                const btn = $('pg-pagar'); btn.disabled = true; btn.firstChild.textContent = 'ABRINDO PAGAMENTO...';
                 try {
                     const resp = await fetch('https://api.checkout.infinitepay.io/links', {
                         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2091,7 +2092,7 @@
                     try { sessionStorage.setItem('bls-ultimo-pedido', JSON.stringify({ nsu, valor, nome: pedido.nome, qtd: pedido.qtd })); } catch (e) { }
                     location.href = dados.url;
                 } catch (err) {
-                    btn.disabled = false; btn.textContent = 'PAGAR AGORA';
+                    btn.disabled = false; btn.firstChild.textContent = 'PAGAR AGORA';
                     aviso.textContent = 'Não conseguimos abrir o pagamento agora. Toque em WhatsApp que finalizamos por lá.';
                 }
             });
