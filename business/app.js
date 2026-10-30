@@ -44,9 +44,9 @@ async function putCofre(cofre,token){let sha;try{sha=(await gh(`/repos/${OWNER}/
  await gh(`/repos/${OWNER}/${REPO}/contents/${COFRE_PATH}`,{method:'PUT',body:JSON.stringify({message:'Cofre do BLESSAINT Business (criptografado)',content:b64(te.encode(JSON.stringify(cofre,null,1))),sha})},token);ls.set(LS.cofre,cofre)}
 
 /* ---------- dados ---------- */
-const KINDS=['products','sales','budgets','entries'];
+const KINDS=['products','sales','budgets','entries','goals'];
 const SEED=[['Oversized Freedom Creme','freedom-creme'],['Oversized Freedom Lilás','freedom-lilas'],['Oversized Freedom Preta','freedom-preta'],['Oversized Multiplicação','multiplicacao-preta'],['Oversized Você Não É Todo Mundo','voce-nao-e-todo-mundo-creme'],['Oversized Another in the Fire','another-in-the-fire-preta'],['Oversized Nuvens Creme','nuvens-creme'],['Oversized Logo Lilás','boxlogo-lilas'],['Oversized Logo Branca','boxlogo-preta'],['Oversized Logo Branca Minimalista','logo-peito-preta']];
-function emptyState(){const now=Date.now();return {v:1,updatedAt:now,deleted:{},products:SEED.map(([n,img],i)=>({id:'p'+(i+1),name:n,collection:'DROP DIVINE',sku:'BLS-'+String(i+1).padStart(3,'0'),price:10990,cost:0,image:'../img/'+img+'-frente.jpg',stock:{P:0,M:0,G:0,GG:0},min:2,updatedAt:now})),sales:[],budgets:[],entries:[]}}
+function emptyState(){const now=Date.now();return {v:1,updatedAt:now,deleted:{},products:SEED.map(([n,img],i)=>({id:'p'+(i+1),name:n,collection:'DROP DIVINE',sku:'BLS-'+String(i+1).padStart(3,'0'),price:10990,cost:0,image:'../img/'+img+'-frente.jpg',stock:{P:0,M:0,G:0,GG:0},min:2,updatedAt:now})),sales:[],budgets:[],entries:[],goals:[]}}
 let S=null;
 function merge(a,b){ // junta dois estados: vence a versão mais nova de cada item; exclusões valem
  if(!a)return b;if(!b)return a;const deleted={...a.deleted,...b.deleted};for(const k in b.deleted)deleted[k]=Math.max(a.deleted?.[k]||0,b.deleted[k]);
@@ -68,7 +68,7 @@ async function push(){if(pushing){again=true;return}pushing=true;setSync('busy')
  catch(e){setSync('off');if(e.status===401||e.status===403)toast('A chave do GitHub venceu ou foi removida. Vá em Ajustes → Trocar chave.')}
  finally{pushing=false;if(again){again=false;push()}}}
 function persist(){S.updatedAt=Date.now();cacheLocal();setSync('busy');clearTimeout(pushT);pushT=setTimeout(push,1200)}
-function upsert(kind,obj){obj.updatedAt=Date.now();const i=S[kind].findIndex(x=>x.id===obj.id);if(i>=0)S[kind][i]=obj;else S[kind].push(obj);persist()}
+function upsert(kind,obj){obj.updatedAt=Date.now();S[kind]=S[kind]||[];const i=S[kind].findIndex(x=>x.id===obj.id);if(i>=0)S[kind][i]=obj;else S[kind].push(obj);persist()}
 function remove(kind,id){S[kind]=S[kind].filter(x=>x.id!==id);S.deleted[id]=Date.now();persist()}
 
 /* ---------- utilidades de tela ---------- */
@@ -126,6 +126,7 @@ async function entrar(fazerPull=true){
  if(fazerPull){setSync('busy');try{const r=await pull();S=merge(S,r.state||emptyState());setSync('ok')}catch(e){setSync('off');if(e.status===401||e.status===403)toast('A chave do GitHub venceu. Vá em Ajustes → Trocar chave.')}}
  if(!S){app.innerHTML='<div class="lock"><div class="lock-box"><h2>Sem conexão</h2><p class="sub">Não consegui carregar os dados e não há cópia neste aparelho. Conecte à internet e tente de novo.</p><button class="btn main full" onclick="location.reload()">Tentar de novo</button></div></div>';return}
  await cacheLocal();shell();render()}
+addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(TABS.some(x=>x[0]===t)&&t!==tab){tab=t;render();scrollTo(0,0)}});
 function sair(){ls.del(LS.sess);ls.del(LS.cache);location.reload()}
 
 /* ---------- casca e abas ---------- */
@@ -144,6 +145,26 @@ function mesResumo(k){const vendas=S.sales.filter(s=>mesKey(s.date)===k);const r
  const pecas=vendas.reduce((a,s)=>a+s.items.reduce((b,i)=>b+i.qty,0),0);return {vendas,rec,extras,saidas,pecas,saldo:rec+extras-saidas}}
 
 /* ---------- Início ---------- */
+/* ---------- Provérbios (troca a cada 3 horas) ---------- */
+const PROV=[['O temor do Senhor é o princípio do conhecimento.','Provérbios 1:7'],['Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento.','Provérbios 3:5'],['Reconhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.','Provérbios 3:6'],['Honra ao Senhor com os teus bens e com as primícias de toda a tua renda.','Provérbios 3:9'],['Não negues o bem a quem de direito, estando em tuas mãos o poder fazê-lo.','Provérbios 3:27'],['Sobre tudo o que se deve guardar, guarda o teu coração, porque dele procedem as fontes da vida.','Provérbios 4:23'],['Vai ter com a formiga, ó preguiçoso; olha para os seus caminhos e sê sábio.','Provérbios 6:6'],['O que anda em sinceridade anda seguro.','Provérbios 10:9'],['A mão dos diligentes enriquece.','Provérbios 10:4'],['A bênção do Senhor é que enriquece, e não acrescenta dores.','Provérbios 10:22'],['Onde não há conselho os projetos fracassam, mas com muitos conselheiros se estabelecem.','Provérbios 15:22'],['A alma generosa prosperará, e quem dá a beber será dessedentado.','Provérbios 11:25'],['O que lavra a sua terra se fartará de pão.','Provérbios 12:11'],['Em todo trabalho há proveito.','Provérbios 14:23'],['A resposta branda desvia o furor.','Provérbios 15:1'],['Entrega ao Senhor as tuas obras, e teus pensamentos serão estabelecidos.','Provérbios 16:3'],['O coração do homem planeja o seu caminho, mas o Senhor lhe dirige os passos.','Provérbios 16:9'],['Melhor é o pouco com justiça do que grandes rendas com injustiça.','Provérbios 16:8'],['A soberba precede a ruína.','Provérbios 16:18'],['Em todo tempo ama o amigo, e na angústia nasce o irmão.','Provérbios 17:17'],['O coração alegre é bom remédio.','Provérbios 17:22'],['Torre forte é o nome do Senhor; a ela correrá o justo e estará em alto refúgio.','Provérbios 18:10'],['Muitos propósitos há no coração do homem, mas o conselho do Senhor permanecerá.','Provérbios 19:21'],['Mais vale o bom nome do que as muitas riquezas.','Provérbios 22:1'],['Vês um homem diligente em sua obra? Perante reis será posto.','Provérbios 22:29'],['Com a sabedoria se edifica a casa, e com o entendimento ela se estabelece.','Provérbios 24:3'],['Como o ferro com o ferro se aguça, assim o homem afia o rosto do seu amigo.','Provérbios 27:17'],['Procura conhecer o estado das tuas ovelhas; põe o teu coração sobre o teu gado.','Provérbios 27:23'],['O que confia no Senhor prosperará.','Provérbios 28:25'],['Os planos do diligente tendem à abundância.','Provérbios 21:5']];
+const provAtual=()=>PROV[Math.floor(Date.now()/(3*3600e3))%PROV.length];
+/* ---------- números de investimento e lucro ---------- */
+const CAT_INV=['Estoque','Estampa / produção','Frete'];
+function numeros(){const vendidas=S.sales.filter(v=>v.status==='Pago'),vendidoTot=vendidas.reduce((a,v)=>a+saleTotal(v),0);
+ const custoVend=S.sales.reduce((a,v)=>a+v.items.reduce((b,i)=>b+i.qty*(prod(i.productId)?.cost||0),0),0);
+ const investido=S.entries.filter(e=>e.type==='Saída'&&CAT_INV.includes(e.category)).reduce((a,e)=>a+e.value,0);
+ const pago=S.entries.filter(e=>e.type==='Saída'&&CAT_INV.includes(e.category)&&e.paid).reduce((a,e)=>a+e.value,0);
+ const emEstoque=S.products.reduce((a,p)=>a+totalStock(p)*p.price,0),pecas=S.products.reduce((a,p)=>a+totalStock(p),0);
+ const precoMedio=pecas?Math.round(emEstoque/pecas):0,falta=Math.max(0,investido-vendidoTot);
+ return {vendidoTot,custoVend,investido,pago,emEstoque,pecas,lucroPrev:vendidoTot+emEstoque-investido,falta,pecasFalta:precoMedio?Math.ceil(falta/precoMedio):0,recuperado:investido?Math.min(100,Math.round(vendidoTot/investido*100)):0}}
+function lucroMes(k){const vs=S.sales.filter(v=>v.status==='Pago'&&mesKey(v.date)===k);return vs.reduce((a,v)=>a+saleTotal(v)-v.items.reduce((b,i)=>b+i.qty*(prod(i.productId)?.cost||0),0),0)}
+function secInvest(){const n=numeros();if(!n.investido&&!n.vendidoTot)return '';
+ return `<div class="sec"><h3>Investimento × retorno</h3><button class="card inv go" data-go="financas">
+  <div class="inv-top"><div><small>Investido em produção</small><strong>${money(n.investido)}</strong><span>${money(n.pago)} já pago</span></div><div><small>Lucro previsto</small><strong class="okc">${money(n.lucroPrev)}</strong><span>se vender todo o estoque</span></div></div>
+  <div class="inv-bar"><i style="width:${n.recuperado}%"></i></div>
+  <div class="inv-sub"><span>${n.recuperado}% do investimento já voltou em vendas (${money(n.vendidoTot)})</span><span>${n.falta?'Faltam <b>'+n.pecasFalta+' peças</b> para pagar o investimento':'<b>Investimento pago!</b> Daqui pra frente é lucro'}</span></div>
+  <div class="inv-sub"><span>Estoque vale ${money(n.emEstoque)} em preço de venda · ${n.pecas} peças</span><span class="go-t">ver finanças ›</span></div></button></div>`}
+
 
 /* ---------- Próximos passos automáticos (30/10/2026) ---------- */
 function proximosPassos(){const h=today(),d3=(()=>{const x=new Date(h+'T12:00:00');x.setDate(x.getDate()+3);return x.toISOString().slice(0,10)})(),L=[];
@@ -168,27 +189,54 @@ function vInicio(){const k=mesKey(today()),r=mesResumo(k);
  const abertos=S.budgets.filter(b=>b.status==='Aberto');
  const meses=[...Array(6)].map((_,i)=>{const d=new Date();d.setDate(15);d.setMonth(d.getMonth()-5+i);return d.toISOString().slice(0,7)});
  const vals=meses.map(m=>mesResumo(m).rec);const max=Math.max(...vals,1);
- return `<h1 class="page">Olá, BLESSAINT</h1><p class="lead">Resumo de ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}.</p>
- <div class="grid4"><div class="kpi"><small>Vendido no mês</small><strong>${money(r.rec)}</strong><span>${r.pecas} peça(s) · ${r.vendas.length} venda(s)</span></div>
- <div class="kpi"><small>A receber</small><strong>${money(aReceber)}</strong><span>vendas pendentes</span></div>
- <div class="kpi"><small>Saldo do mês</small><strong>${money(r.saldo)}</strong><span>vendas + entradas − saídas</span></div>
- <div class="kpi"><small>Peças em estoque</small><strong>${S.products.reduce((a,p)=>a+totalStock(p),0)}</strong><span>${S.products.length} modelo(s)</span></div></div>
+ const lm=lucroMes(k),[pv,pr]=provAtual();
+ return `<h1 class="page">Olá, Arnold</h1><p class="lead">Resumo de ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}.</p>
+ <figure class="verso"><blockquote>“${esc(pv)}”</blockquote><figcaption>${pr}</figcaption></figure>
+ <div class="grid4"><button class="kpi go" data-go="vendas:mes"><small>Vendido no mês</small><strong>${money(r.rec)}</strong><span>${r.pecas} peça(s) · ${r.vendas.length} venda(s) ›</span></button>
+ <button class="kpi go" data-go="vendas:mes"><small>Lucro do mês</small><strong class="${lm<0?'badc':'okc'}">${money(lm)}</strong><span>vendas − custo das peças ›</span></button>
+ <button class="kpi go" data-go="vendas:pend"><small>A receber</small><strong>${money(aReceber)}</strong><span>vendas pendentes ›</span></button>
+ <button class="kpi go" data-go="estoque"><small>Peças em estoque</small><strong>${S.products.reduce((a,p)=>a+totalStock(p),0)}</strong><span>${modelos().length} modelo(s) · ${S.products.length} cores ›</span></button></div>
  <div class="row" style="margin-top:14px"><button class="btn main" data-act="nova-venda">${svg('plus',18)} Nova venda</button><button class="btn" data-act="entrada-estoque">${svg('box',18)} Entrada de estoque</button></div>
+ ${secMeta(k,r)}
  ${secProximos()}
- <div class="sec"><h3>Vendas pagas · últimos 6 meses</h3><div class="card"><div class="chart">${meses.map((m,i)=>`<div class="${i===5?'cur':''}"><small>${vals[i]?money(vals[i]).replace(',00',''):''}</small><i style="height:${Math.max(2,vals[i]/max*90)}%"></i><small>${mesNome(m)}</small></div>`).join('')}</div></div></div>
- <div class="sec"><h3>Estoque baixo</h3>${baixos.length?`<div class="list">${baixos.slice(0,6).map(itemProduto).join('')}</div>`:'<div class="empty">Nenhuma peça abaixo do mínimo.</div>'}</div>
- <div class="sec"><h3>Contas a pagar</h3>${contas.length?`<div class="list">${contas.slice(0,5).map(itemEntrada).join('')}</div>`:'<div class="empty">Nenhuma conta pendente.</div>'}</div>
- <div class="sec"><h3>Orçamentos em aberto</h3>${abertos.length?`<div class="list">${abertos.slice(0,5).map(itemOrc).join('')}</div>`:'<div class="empty">Nenhum orçamento em aberto.</div>'}</div>`}
+ ${secInvest()}
+ <div class="sec"><h3>Vendas pagas · últimos 6 meses</h3><div class="card"><div class="chart">${meses.map((m,i)=>`<div class="${i===5?'cur':''} go" data-go="financas@${m}" role="button" title="Ver ${mesNome(m)}"><small>${vals[i]?money(vals[i]).replace(',00',''):''}</small><i style="height:${Math.max(2,vals[i]/max*90)}%"></i><small>${mesNome(m)}</small></div>`).join('')}</div></div></div>
+ <div class="sec"><h3>Estoque baixo <button class="ver" data-go="estoque">ver estoque ›</button></h3>${baixos.length?`<div class="list">${baixos.slice(0,6).map(itemProduto).join('')}</div>`:'<div class="empty">Nenhuma peça abaixo do mínimo.</div>'}</div>
+ <div class="sec"><h3>Contas a pagar <button class="ver" data-go="financas">ver finanças ›</button></h3>${contas.length?`<div class="list">${contas.slice(0,5).map(itemEntrada).join('')}</div>`:'<div class="empty">Nenhuma conta pendente.</div>'}</div>
+ <div class="sec"><h3>Orçamentos em aberto <button class="ver" data-go="orcamentos">ver todos ›</button></h3>${abertos.length?`<div class="list">${abertos.slice(0,5).map(itemOrc).join('')}</div>`:'<div class="empty">Nenhum orçamento em aberto.</div>'}</div>`}
 
+
+/* ---------- meta do mês ---------- */
+const metaDe=k=>(S.goals||[]).find(g=>g.id==='meta-'+k);
+function secMeta(k,r){const g=metaDe(k),nome=new Date(k+'-15T12:00:00').toLocaleDateString('pt-BR',{month:'long'});
+ if(!g)return `<button class="card meta go vazia" data-act="meta"><span>🎯</span><span><b>Definir a meta de ${nome}</b><small>Quantas peças e quanto quer vender este mês</small></span><span class="prox-go">›</span></button>`;
+ const pp=g.pecas?Math.min(100,Math.round(r.pecas/g.pecas*100)):0,pv=g.valor?Math.min(100,Math.round(r.rec/g.valor*100)):0;
+ const dias=new Date(+k.slice(0,4),+k.slice(5),0).getDate(),hoje=+today().slice(8),restam=Math.max(1,dias-hoje+1),faltaP=Math.max(0,(g.pecas||0)-r.pecas);
+ return `<button class="card meta go" data-act="meta"><div class="meta-h"><b>Meta de ${nome}</b><small>${faltaP?'faltam '+faltaP+' peça(s) · '+(Math.ceil(faltaP/restam*10)/10).toString().replace('.',',')+' por dia':'meta de peças batida! 🙌'}</small></div>
+  ${g.pecas?`<div class="meta-l"><span>Peças</span><div class="inv-bar"><i style="width:${pp}%"></i></div><span>${r.pecas}/${g.pecas}</span></div>`:''}
+  ${g.valor?`<div class="meta-l"><span>Vendas</span><div class="inv-bar"><i style="width:${pv}%"></i></div><span>${pv}%</span></div>`:''}</button>`}
+function formMeta(){const k=mesKey(today()),g=metaDe(k)||{id:'meta-'+k,month:k,pecas:0,valor:0};
+ openDlg('Meta de '+new Date(k+'-15T12:00:00').toLocaleDateString('pt-BR',{month:'long',year:'numeric'}),`<div class="grid2"><label class="field">Peças a vender<input name="pecas" type="number" min="0" max="9999" inputmode="numeric" value="${g.pecas||''}"></label><label class="field">Valor em vendas (R$)<input name="valor" inputmode="decimal" value="${g.valor?fromCents(g.valor):''}"></label></div><p class="note">A barra anda sozinha com as vendas pagas do mês.</p>`,
+  async f=>{const pecas=Math.max(0,parseInt(f.pecas.value)||0),valor=toCents(f.valor.value);if(!pecas&&!valor)return 'Informe as peças ou o valor.';upsert('goals',{...g,pecas,valor});toast('Meta salva.')})}
 /* ---------- Estoque ---------- */
+/* ---------- modelos (agrupa as cores de cada estampa) ---------- */
+const CORES={'Branca':'#f7f7f4','Off-white':'#eee7d8','Bege Costeiro':'#cbb393','Preta':'#141414','Creme':'#e9dcc2','Lilás':'#b9a3d6'};
+const corDe=p=>{const n=p.name;return Object.keys(CORES).sort((a,b)=>b.length-a.length).find(c=>n.endsWith(' '+c))||''};
+const modeloDe=p=>{const c=corDe(p);return p.name.replace(/^Oversized /,'').replace(c?' '+c:'','').trim()};
+function modelos(){const m=new Map();S.products.forEach(p=>{const k=(p.collection||'')+'|'+modeloDe(p);if(!m.has(k))m.set(k,{nome:modeloDe(p),colecao:p.collection||'',itens:[]});m.get(k).itens.push(p)});return [...m.values()].sort((a,b)=>a.colecao.localeCompare(b.colecao)||a.nome.localeCompare(b.nome,'pt-BR'))}
+function cardModelo(md,i){const tot=md.itens.reduce((a,p)=>a+totalStock(p),0),p0=md.itens[0];
+ return `<article class="card modelo" data-modelo="${i}"><div class="mod-foto"><img src="${esc(p0.image||LOGO)}" alt="" loading="lazy" onerror="this.src='${LOGO}'" data-foto></div>
+ <div class="mod-info"><div class="mod-head"><div><b>${esc(md.nome)}</b><small>${esc(md.colecao||'Sem coleção')} · ${money(p0.price)}${p0.cost?' · custo '+money(p0.cost):''}</small></div><span class="tag ${tot===0?'bad':'ok'}">${tot} un.</span></div>
+ <table class="grade"><thead><tr><th>Cor</th>${SIZES.map(z=>`<th>${z}</th>`).join('')}<th></th></tr></thead><tbody>${md.itens.map(p=>{const c=corDe(p);return `<tr data-cor-foto="${esc(p.image||'')}"><td><span class="dot" style="background:${CORES[c]||'#888'}"></span>${esc(c||p.name)}</td>${SIZES.map(z=>{const q=p.stock[z]||0;return `<td class="${q===0?'z':q<=(p.min??2)?'w':''}">${q}</td>`}).join('')}<td><button class="mini" data-edit-prod="${p.id}" aria-label="Editar ${esc(p.name)}">editar</button></td></tr>`}).join('')}</tbody></table></div></article>`}
+
 function itemProduto(p){const t=totalStock(p),baixo=SIZES.some(s=>(p.stock[s]||0)<=(p.min??2));
  return `<button class="item" data-edit-prod="${p.id}"><img src="${esc(p.image||LOGO)}" alt="" loading="lazy" onerror="this.src='${LOGO}'"><span class="grow"><b>${esc(p.name)}</b><small>${esc(p.sku||'')}${p.collection?' · '+esc(p.collection):''}</small><span class="sizes">${SIZES.map(s=>`<span class="${(p.stock[s]||0)===0?'z':''}">${s} ${p.stock[s]||0}</span>`).join('')}</span></span><span class="end"><b>${money(p.price)}</b><span class="tag ${t===0?'bad':baixo?'warn':'ok'}">${t} un.</span></span></button>`}
 function vEstoque(){const q=filtro.estoque.toLowerCase();const list=S.products.filter(p=>!q||(p.name+' '+p.sku+' '+(p.collection||'')).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
  const valor=S.products.reduce((a,p)=>a+totalStock(p)*p.price,0);
- return `<h1 class="page">Estoque</h1><p class="lead">Toque numa peça para editar quantidades, preço ou excluir. ${S.products.reduce((a,p)=>a+totalStock(p),0)} peça(s) · ${money(valor)} em preço de venda.</p>
+ return `<h1 class="page">Estoque</h1><p class="lead">Uma estampa por cartão, com as cores e a grade de tamanhos. Toque numa cor para ver a foto; em "editar" para mudar quantidades ou preço. ${S.products.reduce((a,p)=>a+totalStock(p),0)} peça(s) · ${money(valor)} em preço de venda.</p>
  <div class="row" style="margin-bottom:12px"><button class="btn main" data-act="novo-prod">${svg('plus',18)} Nova peça</button><button class="btn" data-act="entrada-estoque">Entrada de estoque</button></div>
  <input class="search" type="search" placeholder="Buscar peça…" value="${esc(filtro.estoque)}" data-filtro="estoque">
- ${list.length?`<div class="list">${list.map(itemProduto).join('')}</div>`:'<div class="empty">Nenhuma peça encontrada.</div>'}`}
+ ${(()=>{const ms=modelos().map(md=>({...md,itens:md.itens.filter(p=>list.includes(p))})).filter(md=>md.itens.length);return ms.length?`<div class="modelos">${ms.map(cardModelo).join('')}</div>`:'<div class="empty">Nenhuma peça encontrada.</div>'})()}`}
 function formProd(p){const n=!p;p=p||{id:uid(),name:'',collection:'',sku:'',price:0,cost:0,image:'',stock:{P:0,M:0,G:0,GG:0},min:2};
  openDlg(n?'Nova peça':'Editar peça',`<label class="field">Nome<input name="name" value="${esc(p.name)}" required maxlength="120"></label>
   <div class="grid2"><label class="field">Coleção<input name="collection" value="${esc(p.collection||'')}" maxlength="60"></label><label class="field">Código<input name="sku" value="${esc(p.sku||'')}" maxlength="30"></label></div>
@@ -215,12 +263,13 @@ function vVendas(){const k=mesKey(today());const list=S.sales.filter(s=>filtro.v
  <div class="seg">${[['mes','Este mês'],['pend','A receber'],['todas','Todas']].map(([v,l])=>`<button data-seg-vendas="${v}" class="${filtro.vendas===v?'on':''}">${l}</button>`).join('')}</div>
  ${list.length?`<div class="list">${list.map(itemVenda).join('')}</div>`:'<div class="empty">Nenhuma venda aqui ainda.</div>'}`}
 function formVenda(s){const n=!s;s=s?JSON.parse(JSON.stringify(s)):{id:uid(),date:today(),client:'',channel:'Instagram',payment:'Pix',status:'Pago',discount:0,items:[],notes:''};
- if(!s.items.length&&S.products.length)s.items.push({productId:S.products[0].id,size:'M',qty:1,price:S.products[0].price});
+ 
  const original=n?null:JSON.parse(JSON.stringify(s));
  const opts=sel=>S.products.slice().sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name.replace('Oversized ',''))}</option>`).join('');
  const lineHTML=(it,i)=>`<div class="line" data-line="${i}"><select name="l_p">${opts(it.productId)}</select><select name="l_s">${SIZES.map(z=>`<option ${z===it.size?'selected':''}>${z}</option>`).join('')}</select><input name="l_q" type="number" min="1" max="99" value="${it.qty}" inputmode="numeric" aria-label="Quantidade"><button type="button" data-rm-line aria-label="Remover peça">${svg('x',18)}</button></div>`;
  openDlg(n?'Nova venda':'Editar venda',`<div class="grid2"><label class="field">Data<input name="date" type="date" value="${s.date}" required></label><label class="field">Cliente<input name="client" value="${esc(s.client)}" maxlength="80" placeholder="Nome ou @"></label></div>
-  <div class="field">Peças · tamanho · quantidade<div class="lines" id="lines">${s.items.map(lineHTML).join('')}</div><button type="button" class="btn small" id="addline" style="justify-self:start;margin-top:6px">${svg('plus',16)} Adicionar peça</button></div>
+  <div class="field">Toque na camisa e no tamanho<div class="picker" id="picker">${S.products.slice().sort((a,b)=>modeloDe(a).localeCompare(modeloDe(b),'pt-BR')||corDe(a).localeCompare(corDe(b))).map(p=>`<button type="button" class="pk" data-pk="${p.id}" title="${esc(p.name)}"><img src="${esc(p.image||LOGO)}" alt="" loading="lazy" onerror="this.src='${LOGO}'"><span>${esc(modeloDe(p))}</span><small><i class="dot" style="background:${CORES[corDe(p)]||'#888'}"></i>${esc(corDe(p))}</small></button>`).join('')}</div><div class="pk-sizes" id="pksizes"><span class="note">Escolha a camisa acima.</span></div></div>
+  <div class="field">Na venda (dá para trocar tamanho e quantidade)<div class="lines" id="lines">${s.items.map(lineHTML).join('')}</div><button type="button" class="btn small" id="addline" style="justify-self:start;margin-top:6px">${svg('plus',16)} Adicionar peça</button></div>
   <div class="grid2"><label class="field">Canal<select name="channel">${['Instagram','WhatsApp','Site','Loja / evento','Outro'].map(c=>`<option ${c===s.channel?'selected':''}>${c}</option>`).join('')}</select></label><label class="field">Pagamento<select name="payment">${['Pix','Cartão','Dinheiro','Link de pagamento','Outro'].map(c=>`<option ${c===s.payment?'selected':''}>${c}</option>`).join('')}</select></label></div>
   <div class="grid2"><label class="field">Situação<select name="status">${['Pago','Pendente'].map(c=>`<option ${c===s.status?'selected':''}>${c}</option>`).join('')}</select></label><label class="field">Desconto (R$)<input name="discount" inputmode="decimal" value="${fromCents(s.discount)}"></label></div>
   <label class="field">Observação<input name="notes" value="${esc(s.notes||'')}" maxlength="200"></label>
@@ -237,6 +286,12 @@ function formVenda(s){const n=!s;s=s?JSON.parse(JSON.stringify(s)):{id:uid(),dat
   form=>{const tot=()=>{const sum=[...form.querySelectorAll('[data-line]')].reduce((a,l)=>{const p=prod(l.querySelector('[name=l_p]').value);return a+(p?p.price*(parseInt(l.querySelector('[name=l_q]').value)||0):0)},0)-toCents(form.discount.value);form.querySelector('#tot').textContent=money(Math.max(0,sum))};
    const wire=()=>{form.querySelectorAll('[data-rm-line]').forEach(b=>b.onclick=()=>{b.closest('[data-line]').remove();tot()})};
    form.querySelector('#addline').onclick=()=>{const p=S.products[0];if(!p)return;form.querySelector('#lines').insertAdjacentHTML('beforeend',lineHTML({productId:p.id,size:'M',qty:1},Date.now()));wire();tot()};
+   let pkSel=null;const pkSizes=form.querySelector('#pksizes');
+   form.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{pkSel=prod(b.dataset.pk);form.querySelectorAll('[data-pk]').forEach(x=>x.classList.toggle('on',x===b));
+    pkSizes.innerHTML='<b>'+esc(pkSel.name.replace('Oversized ',''))+'</b>'+SIZES.map(z=>{const q=pkSel.stock[z]||0;return `<button type="button" class="pz ${q?'':'z'}" data-pz="${z}">${z}<small>${q} em estoque</small></button>`}).join('');
+    pkSizes.querySelectorAll('[data-pz]').forEach(zb=>zb.onclick=()=>{const z=zb.dataset.pz;const ex=[...form.querySelectorAll('[data-line]')].find(l=>l.querySelector('[name=l_p]').value===pkSel.id&&l.querySelector('[name=l_s]').value===z);
+     if(ex){const q=ex.querySelector('[name=l_q]');q.value=(parseInt(q.value)||0)+1}else{form.querySelector('#lines').insertAdjacentHTML('beforeend',lineHTML({productId:pkSel.id,size:z,qty:1},Date.now()));wire()}
+     zb.classList.add('ok');setTimeout(()=>zb.classList.remove('ok'),500);tot()})});
    form.addEventListener('input',tot);form.addEventListener('change',tot);wire();tot()})}
 
 /* ---------- Orçamentos ---------- */
@@ -288,12 +343,14 @@ function vAjustes(){return `<h1 class="page">Ajustes</h1><p class="lead">Conta c
 
 /* ---------- ligações ---------- */
 function bindMain(m){
+ m.querySelectorAll('[data-cor-foto]').forEach(r=>r.onclick=e=>{if(e.target.closest('button'))return;const img=r.closest('.modelo').querySelector('[data-foto]');if(r.dataset.corFoto)img.src=r.dataset.corFoto;r.closest('tbody').querySelectorAll('tr').forEach(x=>x.classList.toggle('sel',x===r))});
+ m.querySelectorAll('[data-go]').forEach(b=>b.onclick=e=>{e.stopPropagation();let [t,f]=b.dataset.go.split(':');let mes='';if(t.includes('@'))[t,mes]=t.split('@');if(t==='vendas'&&f)filtro.vendas=f;if(t==='financas')filtro.fin=mes||mesKey(today());tab=t;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});
  m.querySelectorAll('.prox-item[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});
  m.querySelectorAll('[data-prox]').forEach(d=>d.addEventListener('toggle',()=>{try{localStorage.setItem('bb_prox_aberto',d.open?'1':'0')}catch{}}));
  m.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;
   if(a==='nova-venda'){if(!S.products.length)return toast('Cadastre uma peça primeiro.');formVenda()}
   else if(a==='entrada-estoque'){if(!S.products.length)return toast('Cadastre uma peça primeiro.');formEntrada()}
-  else if(a==='novo-prod')formProd();else if(a==='novo-orc')formOrc();
+  else if(a==='meta')formMeta();else if(a==='novo-prod')formProd();else if(a==='novo-orc')formOrc();
   else if(a==='nova-saida')formEntradaFin(null,'Saída');else if(a==='nova-entrada')formEntradaFin(null,'Entrada');
   else if(a==='export'){const bl=new Blob([JSON.stringify({app:'BLESSAINT Business',exportedAt:new Date().toISOString(),dados:S},null,2)],{type:'application/json'});const l=document.createElement('a');l.href=URL.createObjectURL(bl);l.download='blessaint-business-'+today()+'.json';l.click();URL.revokeObjectURL(l.href);toast('Cópia baixada.')}
   else if(a==='sair'){if(confirm('Sair deste aparelho? Para voltar, use a senha.'))sair()}});
