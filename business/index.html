@@ -148,12 +148,18 @@ button.kpi{width:100%}
 .meta.vazia{display:flex;align-items:center;gap:12px}.meta.vazia>span:first-child{font-size:24px}.meta.vazia b{display:block}.meta.vazia small{color:var(--muted);font-size:12px}.meta.vazia>span:nth-child(2){flex:1}
 .meta-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}.meta-h small{color:var(--muted);font-size:12px}
 .meta-l{display:grid;grid-template-columns:56px 1fr 56px;gap:10px;align-items:center;font-size:12px;color:var(--muted)}.meta-l span:last-child{text-align:right;color:var(--text);font-weight:700}
+.gnav{position:fixed;z-index:30;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));display:flex;gap:6px;padding:6px;border-radius:999px;background:linear-gradient(160deg,#ffffff1f,#ffffff08);border:1px solid #c9a45c55;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 14px 34px -12px #000,inset 0 1px 0 #ffffff2e}
+.gnav button{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--text);background:#ffffff0d;border:1px solid #ffffff1f;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s}
+.gnav button:hover:not(:disabled){background:#c9a45c2e;box-shadow:0 0 14px #c9a45c55}.gnav button:active:not(:disabled){transform:scale(.92)}
+.gnav button:disabled{opacity:.35;cursor:default}.gnav button.on{background:linear-gradient(135deg,#f3e2b8,#c9a45c);color:#1a140b;box-shadow:0 0 14px #c9a45c77}
+.gnav .fw svg{transform:scaleX(-1)}#main{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}.gnav button:focus-visible{outline:2px solid #ecd7a6;outline-offset:2px}
+@media(min-width:900px){.gnav{bottom:calc(20px + env(safe-area-inset-bottom,0px))}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <dialog id="dlg"></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
-<script src="app.js?v=6ae517a6"></script>
+<script src="app.js?v=6ae51989"></script>
 </body>
 </html>
