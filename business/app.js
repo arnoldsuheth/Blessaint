@@ -144,6 +144,23 @@ function mesResumo(k){const vendas=S.sales.filter(s=>mesKey(s.date)===k);const r
  const pecas=vendas.reduce((a,s)=>a+s.items.reduce((b,i)=>b+i.qty,0),0);return {vendas,rec,extras,saidas,pecas,saldo:rec+extras-saidas}}
 
 /* ---------- Início ---------- */
+
+/* ---------- Próximos passos automáticos (30/10/2026) ---------- */
+function proximosPassos(){const h=today(),d3=(()=>{const x=new Date(h+'T12:00:00');x.setDate(x.getDate()+3);return x.toISOString().slice(0,10)})(),L=[];
+ S.entries.filter(e=>e.type==='Saída'&&!e.paid).sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>{if(e.date<h)L.push({p:0,ic:'money',t:'Pagar: '+e.desc,s:'Venceu em '+dataBR(e.date)+' · '+money(e.value),a:'data-edit-ent="'+e.id+'"',tom:'bad'});else if(e.date<=d3)L.push({p:1,ic:'money',t:'Pagar: '+e.desc,s:(e.date===h?'Vence hoje':'Vence '+dataBR(e.date))+' · '+money(e.value),a:'data-edit-ent="'+e.id+'"',tom:'warn'})});
+ S.entries.filter(e=>e.type==='Entrada'&&!e.paid&&e.date<=d3).forEach(e=>L.push({p:1,ic:'money',t:'Receber: '+e.desc,s:dataBR(e.date)+' · '+money(e.value),a:'data-edit-ent="'+e.id+'"',tom:'warn'}));
+ S.sales.filter(v=>v.status==='Pendente').forEach(v=>L.push({p:2,ic:'cart',t:'Cobrar '+(v.client||'cliente'),s:'Venda de '+dataBR(v.date)+' · '+money(saleTotal(v)),a:'data-edit-venda="'+v.id+'"',tom:'warn'}));
+ S.budgets.filter(b=>b.status==='Aberto').forEach(b=>L.push({p:3,ic:'doc',t:(b.kind.startsWith('Recebido')?'Responder orçamento: ':'Acompanhar orçamento: ')+b.title,s:(b.party?b.party+' · ':'')+money(b.value)+(b.validUntil?' · válido até '+dataBR(b.validUntil):''),a:'data-edit-orc="'+b.id+'"',tom:b.validUntil&&b.validUntil<=d3?'warn':''}));
+ S.products.forEach(p=>{const z=SIZES.filter(t=>(p.stock[t]||0)===0),bx=SIZES.filter(t=>(p.stock[t]||0)>0&&(p.stock[t]||0)<=(p.min??2));const n=p.name.replace('Oversized ','');
+  if(totalStock(p)>0&&z.length)L.push({p:4,ic:'box',t:'Repor '+n,s:'Acabou: '+z.join(', '),a:'data-edit-prod="'+p.id+'"',tom:'bad'});
+  else if(bx.length)L.push({p:5,ic:'box',t:'Estoque baixo: '+n,s:bx.map(t=>t+' '+p.stock[t]).join(' · '),a:'data-edit-prod="'+p.id+'"',tom:'warn'});
+  if(!p.cost||!p.price)L.push({p:6,ic:'box',t:'Completar '+(!p.cost?'custo':'preço')+': '+n,s:'Sem isso o lucro não é calculado',a:'data-edit-prod="'+p.id+'"',tom:''})});
+ const semana=(()=>{const x=new Date(h+'T12:00:00');x.setDate(x.getDate()-7);return x.toISOString().slice(0,10)})();
+ if(S.products.some(p=>totalStock(p)>0)&&!S.sales.some(v=>v.date>=semana))L.push({p:7,ic:'cart',t:'Divulgar as camisas',s:'Nenhuma venda nos últimos 7 dias · postar no Instagram',a:'data-tab="vendas"',tom:''});
+ return L.sort((a,b)=>a.p-b.p)}
+function secProximos(){const L=proximosPassos(),aberto=(()=>{try{return localStorage.getItem('bb_prox_aberto')!=='0'}catch{return true}})();
+ return `<details class="sec prox" ${aberto?'open':''} data-prox><summary><h3 style="margin:0">Próximos passos <span class="prox-n">${L.length}</span></h3><span class="prox-chev" aria-hidden="true"></span></summary>
+ ${L.length?`<div class="list" style="margin-top:10px">${L.slice(0,12).map(x=>`<button class="item prox-item ${x.tom}" ${x.a}><span class="prox-ic">${svg(x.ic,18)}</span><span class="grow"><b>${esc(x.t)}</b><small>${esc(x.s)}</small></span><span class="prox-go">›</span></button>`).join('')}</div>`:'<div class="empty" style="margin-top:10px">Tudo em dia. Nenhum próximo passo agora.</div>'}</details>`}
 function vInicio(){const k=mesKey(today()),r=mesResumo(k);
  const baixos=S.products.filter(p=>SIZES.some(s=>(p.stock[s]||0)<=(p.min??2)));
  const aReceber=S.sales.filter(s=>s.status==='Pendente').reduce((a,s)=>a+saleTotal(s),0);
@@ -157,6 +174,7 @@ function vInicio(){const k=mesKey(today()),r=mesResumo(k);
  <div class="kpi"><small>Saldo do mês</small><strong>${money(r.saldo)}</strong><span>vendas + entradas − saídas</span></div>
  <div class="kpi"><small>Peças em estoque</small><strong>${S.products.reduce((a,p)=>a+totalStock(p),0)}</strong><span>${S.products.length} modelo(s)</span></div></div>
  <div class="row" style="margin-top:14px"><button class="btn main" data-act="nova-venda">${svg('plus',18)} Nova venda</button><button class="btn" data-act="entrada-estoque">${svg('box',18)} Entrada de estoque</button></div>
+ ${secProximos()}
  <div class="sec"><h3>Vendas pagas · últimos 6 meses</h3><div class="card"><div class="chart">${meses.map((m,i)=>`<div class="${i===5?'cur':''}"><small>${vals[i]?money(vals[i]).replace(',00',''):''}</small><i style="height:${Math.max(2,vals[i]/max*90)}%"></i><small>${mesNome(m)}</small></div>`).join('')}</div></div></div>
  <div class="sec"><h3>Estoque baixo</h3>${baixos.length?`<div class="list">${baixos.slice(0,6).map(itemProduto).join('')}</div>`:'<div class="empty">Nenhuma peça abaixo do mínimo.</div>'}</div>
  <div class="sec"><h3>Contas a pagar</h3>${contas.length?`<div class="list">${contas.slice(0,5).map(itemEntrada).join('')}</div>`:'<div class="empty">Nenhuma conta pendente.</div>'}</div>
@@ -270,6 +288,8 @@ function vAjustes(){return `<h1 class="page">Ajustes</h1><p class="lead">Conta c
 
 /* ---------- ligações ---------- */
 function bindMain(m){
+ m.querySelectorAll('.prox-item[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});
+ m.querySelectorAll('[data-prox]').forEach(d=>d.addEventListener('toggle',()=>{try{localStorage.setItem('bb_prox_aberto',d.open?'1':'0')}catch{}}));
  m.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{const a=b.dataset.act;
   if(a==='nova-venda'){if(!S.products.length)return toast('Cadastre uma peça primeiro.');formVenda()}
   else if(a==='entrada-estoque'){if(!S.products.length)return toast('Cadastre uma peça primeiro.');formEntrada()}
