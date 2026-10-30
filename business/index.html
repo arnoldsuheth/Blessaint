@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0b0a08">
+<script>try{if(localStorage.getItem("bb_tema")==="linho")document.documentElement.dataset.tema="linho"}catch(e){}</script>
 <title>BLESSAINT Business</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BLESSAINT Business">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180-v2.png">
-<link rel="icon" href="icon-192-v2.png">
+<link rel="apple-touch-icon" href="icon-180-v3.png">
+<link rel="icon" href="icon-192-v3.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500;1,6..96,700&family=Archivo+Narrow:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0a;--panel:#141414;--panel2:#1c1c1c;--line:#ffffff1f;--line2:#ffffff33;--text:#f5f5f5;--muted:#a3a3a3;--dim:#737373;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--lilas:#c4b5fd;--creme:#f5ecd7;--r:16px}
 *{box-sizing:border-box;margin:0}
@@ -154,12 +155,60 @@ button.kpi{width:100%}
 .gnav button:disabled{opacity:.35;cursor:default}.gnav button.on{background:linear-gradient(135deg,#f3e2b8,#c9a45c);color:#1a140b;box-shadow:0 0 14px #c9a45c77}
 .gnav .fw svg{transform:scaleX(-1)}#main{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}.gnav button:focus-visible{outline:2px solid #ecd7a6;outline-offset:2px}
 @media(min-width:900px){.gnav{bottom:calc(20px + env(safe-area-inset-bottom,0px))}}
+
+/* ===== Tema Santuário (Noite / Linho) ===== */
+:root{--bg:#0b0a08;--panel:rgba(255,244,222,.05);--panel2:rgba(255,244,222,.08);--line:rgba(201,164,92,.22);--line2:rgba(201,164,92,.36);--text:#f3eee4;--muted:#b5aa97;--dim:#8d8474;--creme:#ecd7a6;--ouro:#c9a45c;--ouro2:#ecd7a6;--chao:#0f0d0a;--topo:#0b0a08e6;--display:'Bodoni Moda',Didot,'Times New Roman',serif;--label:'Archivo Narrow','Arial Narrow',sans-serif}
+html[data-tema=linho]{--bg:#f1ebdf;--panel:rgba(255,255,255,.62);--panel2:rgba(255,255,255,.8);--line:rgba(140,110,60,.24);--line2:rgba(140,110,60,.4);--text:#1d1a15;--muted:#6f6656;--dim:#8c8170;--creme:#5b431b;--ouro:#9a7535;--ouro2:#6e5224;--chao:#fbf8f2;--topo:#f1ebdfe8;--ok:#1f8a4c;--warn:#a86b00;--bad:#c2410c;color-scheme:light}
+html{background:var(--bg)}body{background:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,164,92,.16),transparent 60%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .79 0 0 0 0 .64 0 0 0 0 .36 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.anjo-fundo{position:fixed;z-index:-1;pointer-events:none;opacity:.14;width:min(62vw,420px);filter:drop-shadow(0 0 18px rgba(201,164,92,.35));animation:bbFlutua 9s ease-in-out infinite alternate;transition:opacity .5s}
+html[data-tema=linho] .anjo-fundo{opacity:.18;filter:sepia(.4) saturate(1.2) brightness(.7)}
+@keyframes bbFlutua{from{transform:translateY(-8px) rotate(-2deg) scaleX(var(--fx,1))}to{transform:translateY(10px) rotate(2deg) scaleX(var(--fx,1))}}
+input,select,textarea{background:var(--chao);border-color:var(--line2);color:var(--text)}
+input:focus,select:focus,textarea:focus{border-color:var(--ouro);box-shadow:0 0 0 3px rgba(201,164,92,.2)}
+h1.page{font-family:var(--display);font-style:italic;font-weight:700;font-size:34px;letter-spacing:-.01em;color:var(--text)}
+.lock h2{font-family:var(--display);font-style:italic;font-weight:700;font-size:28px}
+.lock h1,.sec h3,.kpi small,.top b,.tag{font-family:var(--label)}
+.sec h3{color:var(--ouro);letter-spacing:.22em}
+.verso blockquote{font-family:var(--display);font-size:17px;color:var(--text)}
+.verso figcaption{color:var(--ouro);font-family:var(--label)}
+.kpi,.card,.item{background:var(--panel);border-color:var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.kpi{position:relative;overflow:hidden;transition:transform .15s}
+.kpi::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(236,215,166,.16) 50%,transparent 65%);transform:translateX(-100%);transition:transform .7s}
+.kpi:hover::after,.kpi:focus-visible::after{transform:translateX(100%)}.kpi:active{transform:scale(.97)}
+.kpi strong{color:var(--ouro2);font-variant-numeric:tabular-nums}
+.btn{background:var(--panel2);border-color:var(--line2);color:var(--text)}
+.btn.main{position:relative;overflow:hidden;color:#1a140b;border:1px solid rgba(255,240,200,.6);background:linear-gradient(135deg,#f6e7c2,#c9a45c 55%,#8a6a2f);box-shadow:0 12px 26px -12px rgba(201,164,92,.7),inset 0 1px 0 rgba(255,255,255,.7)}
+.btn.main::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);animation:bbBrilho 3.6s ease-in-out infinite}
+@keyframes bbBrilho{60%,100%{left:130%}}
+.top{background:var(--topo);border-bottom-color:var(--line)}
+.tabs{background:var(--topo);border-color:var(--line)}
+.tabs button{color:var(--dim)}
+.tabs button.on{color:var(--ouro2);background:rgba(201,164,92,.14);box-shadow:inset 0 0 0 1px rgba(201,164,92,.35)}
+.tema-btn{margin-left:8px;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:30px;border:1px solid var(--line2);background:var(--panel);color:var(--ouro2);font:700 11px var(--label);letter-spacing:.14em;text-transform:uppercase}
+.tema-btn:focus-visible{outline:2px solid var(--ouro);outline-offset:2px}
+/* entrada: logo 3D com órbitas */
+.orbita{position:relative;width:240px;height:240px;display:grid;place-items:center;justify-self:center}
+.orbita .aro{position:absolute;inset:0;border-radius:50%;border:1px solid var(--line2);animation:bbGira 40s linear infinite}
+.orbita .aro::after{content:"";position:absolute;top:-4px;left:50%;width:8px;height:8px;border-radius:50%;background:var(--ouro);box-shadow:0 0 14px var(--ouro)}
+.orbita .aro.dois{inset:24px;animation-duration:26s;animation-direction:reverse;border-style:dashed;opacity:.6}
+@keyframes bbGira{to{transform:rotate(360deg)}}
+.lock-logo{height:auto;width:180px;animation:bbRespira 5s ease-in-out infinite;filter:drop-shadow(0 10px 22px rgba(0,0,0,.6)) drop-shadow(0 0 22px rgba(201,164,92,.28))}
+@keyframes bbRespira{0%,100%{transform:perspective(600px) rotateY(-10deg) rotateX(4deg)}50%{transform:perspective(600px) rotateY(10deg) rotateX(-3deg)}}
+.lock{background:transparent}
+html[data-tema=linho] img[src*="logo-business-v3.png"]{content:url("../img/logo-business-v3-preto.png")}
+html[data-tema=linho] .lock-logo{filter:drop-shadow(0 8px 16px rgba(0,0,0,.15))}
+html[data-tema=linho] .gnav{background:linear-gradient(160deg,#ffffffcc,#ffffff88)}
+html[data-tema=linho] .gnav button{color:var(--text);background:#ffffff99;border-color:var(--line2)}
+html[data-tema=linho] dialog{background:var(--chao);color:var(--text)}
+html[data-tema=linho] .grade tr.sel td{background:rgba(140,110,60,.08)}
+@media(prefers-reduced-motion:reduce){.anjo-fundo,.lock-logo,.orbita .aro,.btn.main::after{animation:none}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <dialog id="dlg"></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
-<script src="app.js?v=6ae51989"></script>
+<script src="app.js?v=6ae52c35"></script>
 </body>
 </html>
