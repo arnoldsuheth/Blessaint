@@ -75,14 +75,14 @@ function remove(kind,id){S[kind]=S[kind].filter(x=>x.id!==id);S.deleted[id]=Date
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.remove('hidden');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.add('hidden'),3200)}
 const ico={home:'<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/>',box:'<path d="M21 8 12 3 3 8v8l9 5 9-5Z"/><path d="m3 8 9 5 9-5M12 13v8"/>',cart:'<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.5L21 8H6"/>',doc:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>',eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',plus:'<path d="M12 5v14M5 12h14"/>',trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>'};
 const svg=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico[n]}</svg>`;
-const LOGO='../img/logo-blessaint-branco.png';
+const LOGO='../img/logo-business-branco.png';
 function bindPw(root){root.querySelectorAll('[data-pw]').forEach(b=>b.onclick=()=>{const i=root.querySelector('#'+b.dataset.pw);i.type=i.type==='password'?'text':'password'})}
 const pwField=(id,label,auto)=>`<label class="field">${label}<span class="pw"><input id="${id}" type="password" autocomplete="${auto}" required><button type="button" data-pw="${id}" aria-label="Mostrar senha">${svg('eye',18)}</button></span></label>`;
 
 /* ---------- cadeado ---------- */
 function telaLogin(){
  app.innerHTML=`<div class="lock"><form class="lock-box" id="f">
-  <img class="lock-logo" src="${LOGO}" alt="BLESSAINT"><h1>BUSINESS</h1>
+  <img class="lock-logo" src="${LOGO}" alt="BLESSAINT Business">
   <p class="sub">Digite sua senha para abrir.</p>
   ${pwField('pw','Senha','current-password')}
   <label class="check"><input type="checkbox" id="lembrar" checked> Lembrar neste aparelho</label>
@@ -96,7 +96,7 @@ function telaLogin(){
 function telaSetup(){
  const url='https://github.com/settings/personal-access-tokens/new';
  app.innerHTML=`<div class="lock"><form class="lock-box" id="f" style="max-width:520px">
-  <img class="lock-logo" src="${LOGO}" alt="BLESSAINT"><h1>BUSINESS</h1>
+  <img class="lock-logo" src="${LOGO}" alt="BLESSAINT Business">
   <h2>Primeiro acesso</h2><p class="sub">É uma vez só. Depois, em qualquer aparelho, você entra só com a senha.</p>
   <section class="card" style="display:grid;gap:12px"><b>1. Crie a senha</b>${pwField('s1','Senha (mínimo 6 caracteres)','new-password')}${pwField('s2','Repita a senha','new-password')}</section>
   <section class="card" style="display:grid;gap:12px"><b>2. Cole a chave de salvamento do GitHub</b>
@@ -133,7 +133,7 @@ function sair(){ls.del(LS.sess);ls.del(LS.cache);location.reload()}
 const TABS=[['inicio','Início','home'],['estoque','Estoque','box'],['vendas','Vendas','cart'],['orcamentos','Orçamentos','doc'],['financas','Finanças','money'],['ajustes','Ajustes','gear']];
 let tab=(location.hash.slice(1)||'inicio');if(!TABS.some(t=>t[0]===tab))tab='inicio';
 let filtro={estoque:'',vendas:'mes',orc:'Aberto',fin:''};
-function shell(){app.innerHTML=`<header class="top"><img src="${LOGO}" alt="BLESSAINT"><b>BUSINESS</b><span class="sync" id="sync"></span></header><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
+function shell(){app.innerHTML=`<header class="top"><img src="${LOGO}" alt="BLESSAINT Business"><span class="sync" id="sync"></span></header><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});setSync(syncState)}
 function render(){const m=$('#main');if(!m||!S)return;app.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
  m.innerHTML=({inicio:vInicio,estoque:vEstoque,vendas:vVendas,orcamentos:vOrc,financas:vFin,ajustes:vAjustes}[tab])();bindMain(m)}
@@ -382,7 +382,7 @@ document.addEventListener('visibilitychange',async()=>{if(document.visibilitySta
 /* ---------- início ---------- */
 (async function boot(){
  if(!crypto.subtle){app.innerHTML='<div class="lock"><div class="lock-box"><h2>Abra pelo endereço seguro</h2><p class="sub">Use https://www.blessaint.com.br/business/</p></div></div>';return}
- app.innerHTML='<div class="lock"><div class="lock-box"><img class="lock-logo" src="'+LOGO+'" alt="BLESSAINT"><p class="sub">Carregando…</p></div></div>';
+ app.innerHTML='<div class="lock"><div class="lock-box"><img class="lock-logo" src="'+LOGO+'" alt="BLESSAINT Business"><p class="sub">Carregando…</p></div></div>';
  const cofreP=fetchCofre();const sess=ls.get(LS.sess);
  if(sess?.key){try{KEY=await importKey(sess.key);SESS={token:sess.token};COFRE=ls.get(LS.cofre);await entrar();cofreP.then(c=>{if(c&&c!=='offline')COFRE=c});return}catch{ls.del(LS.sess)}}
  COFRE=await cofreP;
