@@ -203,12 +203,17 @@ html[data-tema=linho] .gnav button{color:var(--text);background:#ffffff99;border
 html[data-tema=linho] dialog{background:var(--chao);color:var(--text)}
 html[data-tema=linho] .grade tr.sel td{background:rgba(140,110,60,.08)}
 @media(prefers-reduced-motion:reduce){.anjo-fundo,.lock-logo,.orbita .aro,.btn.main::after{animation:none}}
+.coracao-fundo{position:fixed;z-index:-1;pointer-events:none;right:max(-30px,calc(env(safe-area-inset-right) - 30px));top:86px;width:min(46vw,330px);height:auto;opacity:.13;filter:drop-shadow(0 0 22px rgba(201,164,92,.45));transform-origin:55% 55%;animation:bbPulsa 1.6s ease-in-out infinite}
+html[data-tema=linho] .coracao-fundo{opacity:.2;filter:sepia(.3) saturate(1.2) brightness(.8)}
+@keyframes bbPulsa{0%,100%{transform:scale(1)}12%{transform:scale(1.06)}24%{transform:scale(1)}36%{transform:scale(1.035)}50%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.coracao-fundo{animation:none}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <dialog id="dlg"></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
-<script src="app.js?v=6ae52c35"></script>
+<script src="abertura.js?v=6ae5cf87"></script>
+<script src="app.js?v=6ae5cf87"></script>
 </body>
 </html>

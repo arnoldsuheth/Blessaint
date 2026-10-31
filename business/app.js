@@ -133,7 +133,7 @@ function sair(){ls.del(LS.sess);ls.del(LS.cache);location.reload()}
 const TABS=[['inicio','Início','home'],['estoque','Estoque','box'],['vendas','Vendas','cart'],['orcamentos','Orçamentos','doc'],['financas','Finanças','money'],['ajustes','Ajustes','gear']];
 let tab=(location.hash.slice(1)||'inicio');if(!TABS.some(t=>t[0]===tab))tab='inicio';
 let filtro={estoque:'',vendas:'mes',orc:'Aberto',fin:''};
-function shell(){app.innerHTML=`<header class="top"><img src="${LOGO}" alt="BLESSAINT Business"><span class="sync" id="sync"></span><button type="button" class="tema-btn" id="temaBtn" aria-label="Mudar tema">${temaNome()}</button></header><img class="anjo-fundo" id="anjo" alt="" aria-hidden="true"><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
+function shell(){app.innerHTML=`<header class="top"><img src="${LOGO}" alt="BLESSAINT Business"><span class="sync" id="sync"></span><button type="button" class="tema-btn" id="temaBtn" aria-label="Mudar tema">${temaNome()}</button></header><img class="coracao-fundo" src="../img/enfeites/coracao.png" alt="" aria-hidden="true"><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
  $('#temaBtn').onclick=()=>{const l=document.documentElement.dataset.tema!=='linho';if(l)document.documentElement.dataset.tema='linho';else delete document.documentElement.dataset.tema;try{localStorage.setItem('bb_tema',l?'linho':'noite')}catch(e){}$('#temaBtn').textContent=temaNome()};
  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});setSync(syncState)}
 
@@ -145,7 +145,7 @@ function pintarNav(){let n=document.getElementById('gnav');if(!n){n=document.cre
  n.querySelector('[data-n=voltar]').disabled=!navBack.length;n.querySelector('[data-n=avancar]').disabled=!navFwd.length;n.querySelector('[data-n=inicio]').classList.toggle('on',tab==='inicio')}
 function temaNome(){return document.documentElement.dataset.tema==='linho'?'☾ Noite':'☀ Linho'}
 const ANJOS={inicio:['1','top:70px;right:-70px',1],estoque:['2','top:140px;left:-60px',1],vendas:['3','bottom:110px;right:-90px',1],orcamentos:['4','top:90px;left:-50px',-1],financas:['1','bottom:120px;left:-80px',-1],ajustes:['2','top:120px;right:-50px',-1]};
-function pintarAnjo(){const el=document.getElementById('anjo');if(!el)return;const [n,pos,fx]=ANJOS[tab]||ANJOS.inicio;const src='../img/anjos/anjo-'+n+'.webp';el.style.cssText=pos+';--fx:'+fx;if(!el.src.endsWith(src))el.src=src}
+function pintarAnjo(){return;const el=document.getElementById('anjo');if(!el)return;const [n,pos,fx]=ANJOS[tab]||ANJOS.inicio;const src='../img/anjos/anjo-'+n+'.webp';el.style.cssText=pos+';--fx:'+fx;if(!el.src.endsWith(src))el.src=src}
 let navAtual=null,navBack=[],navFwd=[],navPorHist=false;
 function render(){const m=$('#main');if(!m||!S)return;if(navAtual!==null&&navAtual!==tab&&!navPorHist){navBack.push(navAtual);navFwd=[]}navPorHist=false;navAtual=tab;pintarNav();pintarAnjo();app.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
  m.innerHTML=({inicio:vInicio,estoque:vEstoque,vendas:vVendas,orcamentos:vOrc,financas:vFin,ajustes:vAjustes}[tab])();bindMain(m)}
