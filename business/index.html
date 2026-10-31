@@ -281,13 +281,19 @@ html[data-tema=linho] .bb-hero{background:radial-gradient(ellipse at 50% 0%,rgba
  .inv-pctbox{grid-column:1/-1;grid-row:1;flex-direction:row;display:flex!important;align-items:baseline;gap:8px!important;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){.bb-topo-logo:after,.bb-hero-borda,.bb-ola,.inv-bar2 *,.inv .okc{animation:none!important}.inv-bar2 .enche{width:var(--p)}}
+.meta-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:var(--ouro,#c9a45c);background:rgba(201,164,92,.12);box-shadow:inset 0 0 0 1px rgba(201,164,92,.3);flex-shrink:0}
+.meta-ic svg{width:24px;height:24px;overflow:visible}.meta-ic svg *{transform-box:fill-box;transform-origin:50% 50%}
+.meta-ic .mi-a{animation:bbMiAnel 2.4s ease-out infinite}.meta-ic .mi-b{animation:bbMiAnel 2.4s ease-out .4s infinite}
+.meta-ic .mi-s{animation:bbMiSeta 2.4s ease-in-out infinite}
+@keyframes bbMiAnel{0%,100%{opacity:1;transform:scale(1)}60%{opacity:.35;transform:scale(1.12)}}
+@keyframes bbMiSeta{0%,100%{transform:translate(0,0)}20%{transform:translate(2px,-2px)}35%{transform:none}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <dialog id="dlg"></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
-<script src="abertura.js?v=6ae5d33b"></script>
-<script src="app.js?v=6ae5d33b"></script>
+<script src="abertura.js?v=6ae5d6e2"></script>
+<script src="app.js?v=6ae5d6e2"></script>
 </body>
 </html>

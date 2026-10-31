@@ -223,10 +223,10 @@ function vInicio(){const k=mesKey(today()),r=mesResumo(k);
 /* ---------- meta do mês ---------- */
 const metaDe=k=>(S.goals||[]).find(g=>g.id==='meta-'+k);
 function secMeta(k,r){const g=metaDe(k),nome=new Date(k+'-15T12:00:00').toLocaleDateString('pt-BR',{month:'long'});
- if(!g)return `<button class="card meta go vazia" data-act="meta"><span>🎯</span><span><b>Definir a meta de ${nome}</b><small>Quantas peças e quanto quer vender este mês</small></span><span class="prox-go">›</span></button>`;
+ if(!g)return `<button class="card meta go vazia" data-act="meta"><span class="meta-ic"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle class="mi-a" cx="16" cy="16" r="11"/><circle class="mi-b" cx="16" cy="16" r="6.5"/><circle cx="16" cy="16" r="2.2" fill="currentColor"/><path class="mi-s" d="M16 16l9-9M21.5 6.5l3.5.2.2 3.4"/></svg></span><span><b>Definir a meta de ${nome}</b><small>Quantas peças e quanto quer vender este mês</small></span><span class="prox-go">›</span></button>`;
  const pp=g.pecas?Math.min(100,Math.round(r.pecas/g.pecas*100)):0,pv=g.valor?Math.min(100,Math.round(r.rec/g.valor*100)):0;
  const dias=new Date(+k.slice(0,4),+k.slice(5),0).getDate(),hoje=+today().slice(8),restam=Math.max(1,dias-hoje+1),faltaP=Math.max(0,(g.pecas||0)-r.pecas);
- return `<button class="card meta go" data-act="meta"><div class="meta-h"><b>Meta de ${nome}</b><small>${faltaP?'faltam '+faltaP+' peça(s) · '+(Math.ceil(faltaP/restam*10)/10).toString().replace('.',',')+' por dia':'meta de peças batida! 🙌'}</small></div>
+ return `<button class="card meta go" data-act="meta"><div class="meta-h"><b>Meta de ${nome}</b><small>${faltaP?'faltam '+faltaP+' peça(s) · '+(Math.ceil(faltaP/restam*10)/10).toString().replace('.',',')+' por dia':'meta de peças batida!'}</small></div>
   ${g.pecas?`<div class="meta-l"><span>Peças</span><div class="inv-bar"><i style="width:${pp}%"></i></div><span>${r.pecas}/${g.pecas}</span></div>`:''}
   ${g.valor?`<div class="meta-l"><span>Vendas</span><div class="inv-bar"><i style="width:${pv}%"></i></div><span>${pv}%</span></div>`:''}</button>`}
 function formMeta(){const k=mesKey(today()),g=metaDe(k)||{id:'meta-'+k,month:k,pecas:0,valor:0};
