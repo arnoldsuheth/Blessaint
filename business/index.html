@@ -207,13 +207,87 @@ html[data-tema=linho] .grade tr.sel td{background:rgba(140,110,60,.08)}
 html[data-tema=linho] .coracao-fundo{opacity:.2;filter:sepia(.3) saturate(1.2) brightness(.8)}
 @keyframes bbPulsa{0%,100%{transform:scale(1)}12%{transform:scale(1.06)}24%{transform:scale(1)}36%{transform:scale(1.035)}50%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.coracao-fundo{animation:none}}
+
+/* ===== Efeitos Evolution na BLESSAINT (31/10/2026) ===== */
+/* logo do topo: brilho passando */
+.bb-topo-logo{position:relative;display:inline-block;overflow:hidden;line-height:0;-webkit-mask:url(../img/logo-business-v3.png) center/contain no-repeat;mask:url(../img/logo-business-v3.png) center/contain no-repeat}
+.bb-topo-logo img{animation:bbLogoIn 1.1s cubic-bezier(.2,.8,.2,1) both}
+.bb-topo-logo:after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,250,235,.95),transparent);transform:skewX(-20deg);animation:bbVarre 5.5s ease-in-out 1.2s infinite}
+@keyframes bbLogoIn{from{opacity:0;transform:translateY(6px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes bbVarre{0%{left:-60%}25%,100%{left:130%}}
+/* saudacao centralizada */
+.bb-hero{position:relative;display:grid;justify-items:center;text-align:center;gap:6px;margin:6px 0 18px;padding:20px 18px 22px;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,rgba(201,164,92,.16),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(201,164,92,.22);overflow:hidden;isolation:isolate}
+@property --bbA{syntax:'<angle>';inherits:false;initial-value:0deg}
+.bb-hero-borda{position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--bbA),transparent 0 62%,rgba(236,215,166,.95) 76%,#fff 79%,transparent 92%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:bbGiraB 6s linear infinite;pointer-events:none}
+@keyframes bbGiraB{to{--bbA:360deg}}
+.bb-hero-logo{position:relative;width:100%;max-width:560px;height:clamp(120px,22vw,190px);cursor:crosshair;touch-action:pan-y}
+.bb-hero-logo canvas{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 10px rgba(227,196,127,.35))}
+.bb-hero-logo .bb-logo-estatica{position:absolute;inset:0;margin:auto;max-height:100%;max-width:86%}
+.bb-hero-eyebrow{margin:4px 0 0;font:700 11px/1.3 var(--label,'Archivo Narrow'),sans-serif;letter-spacing:.28em;text-transform:uppercase;color:var(--ouro,#c9a45c)}
+.bb-ola{margin:0;font:800 clamp(28px,5vw,40px)/1.1 Montserrat,system-ui,sans-serif;letter-spacing:-.02em;font-style:normal;background:linear-gradient(100deg,#f3ead7 0%,#e3c47f 30%,#fff 50%,#e3c47f 70%,#f3ead7 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:bbOuroTxt 7s linear infinite;white-space:pre}
+@keyframes bbOuroTxt{to{background-position:260% 0}}
+.bb-verso{margin:8px auto 0;max-width:640px;padding:0}
+.bb-verso blockquote{margin:0;font:500 16px/1.55 Montserrat,system-ui,sans-serif;font-style:normal;color:var(--text)}
+.bb-verso figcaption{margin-top:6px;font:700 11px/1 var(--label,'Archivo Narrow'),sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--ouro,#c9a45c)}
+html[data-tema=linho] .bb-ola{background-image:linear-gradient(100deg,#5a3f12 0%,#a8813a 30%,#3a2a0e 50%,#a8813a 70%,#5a3f12 100%)}
+html[data-tema=linho] .bb-hero{background:radial-gradient(ellipse at 50% 0%,rgba(201,164,92,.22),transparent 60%),rgba(255,255,255,.35)}
+/* investimento x retorno: vivo e tecnologico */
+.inv-top{grid-template-columns:1fr auto 1fr!important;align-items:end}
+.inv-lucro{text-align:right;justify-items:end}
+.inv-pctbox{display:grid;justify-items:center;gap:2px}
+.inv-pct{font:800 30px/1 Montserrat,system-ui,sans-serif!important;background:linear-gradient(180deg,#fff,#e3c47f);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px rgba(227,196,127,.4))}
+.inv .okc{text-shadow:0 0 18px rgba(74,222,128,.45);animation:bbPulsaVerde 2.6s ease-in-out infinite}
+@keyframes bbPulsaVerde{0%,100%{text-shadow:0 0 10px rgba(74,222,128,.25)}50%{text-shadow:0 0 22px rgba(74,222,128,.6)}}
+.inv-bar2{position:relative;padding-bottom:22px}
+.inv-bar2 .trilha{position:relative;height:16px;border-radius:12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(201,164,92,.25),inset 0 2px 6px rgba(0,0,0,.5);overflow:hidden}
+.inv-bar2 .grade{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(2% - 1px),rgba(201,164,92,.18) calc(2% - 1px) 2%)}
+.inv-bar2 .enche{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:12px;background:linear-gradient(90deg,#8a6a2f,#c9a45c 45%,#f3ead7);box-shadow:0 0 16px rgba(227,196,127,.6);animation:bbEnche 1.6s cubic-bezier(.2,.8,.2,1) .3s forwards;overflow:visible}
+@keyframes bbEnche{to{width:var(--p)}}
+.inv-bar2 .listras{position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.22) 0 6px,transparent 6px 12px);background-size:17px 17px;animation:bbListras .8s linear infinite;opacity:.6}
+@keyframes bbListras{to{background-position:17px 0}}
+.inv-bar2 .ponta{position:absolute;right:-6px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25),0 0 18px 6px rgba(243,234,215,.85);animation:bbPonta 1.2s ease-in-out infinite}
+@keyframes bbPonta{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.inv-bar2 .scan{position:absolute;top:0;bottom:0;width:60px;left:-60px;background:linear-gradient(90deg,transparent,rgba(236,215,166,.35),transparent);animation:bbScan 3.2s ease-in-out 1.8s infinite}
+@keyframes bbScan{0%{left:-60px}60%,100%{left:100%}}
+.inv-bar2 .marcas{position:absolute;left:0;right:0;bottom:0;height:16px;font:600 10px/1 Montserrat,system-ui,sans-serif;color:var(--dim)}
+.inv-bar2 .marcas span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap}
+.inv-bar2 .marcas span:first-child{transform:none}
+.inv-bar2 .marcas .m-fim{transform:translateX(-100%);display:inline-flex;align-items:center;gap:3px;color:var(--ouro,#c9a45c);font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+.inv-bar2 .marcas span:before{content:"";position:absolute;left:50%;top:-6px;width:1px;height:4px;background:rgba(201,164,92,.45)}
+/* menu lateral maior (computador) */
+@media(min-width:900px){
+ .tabs{width:248px!important;padding:92px 16px 16px!important;gap:6px}
+ .tabs button{font-size:15px!important;padding:14px 16px!important;gap:14px!important;border-radius:14px!important;font-weight:600;transition:background .2s,transform .2s}
+ .tabs button svg{width:22px!important;height:22px!important}
+ .tabs button:hover{background:rgba(201,164,92,.08);transform:translateX(3px)}
+ .tabs button.on{position:relative;background:linear-gradient(90deg,rgba(201,164,92,.22),rgba(201,164,92,.06))!important;box-shadow:inset 0 0 0 1px rgba(201,164,92,.4),0 8px 22px -12px rgba(201,164,92,.6)!important}
+ .tabs button.on:before{content:"";position:absolute;left:-16px;top:10px;bottom:10px;width:3px;border-radius:3px;background:linear-gradient(180deg,#f3ead7,#c9a45c);box-shadow:0 0 12px #c9a45c}
+ .top{padding-left:264px!important}
+ main{padding-left:264px!important}
+ .top img{height:40px}
+}
+/* celular: menu de baixo e saudacao */
+@media(max-width:899px){
+ .tabs{padding:8px 6px calc(8px + env(safe-area-inset-bottom))!important}
+ .tabs button{font-size:10.5px!important;gap:4px!important;padding:7px 2px!important;border-radius:14px!important;transition:transform .2s}
+ .tabs button svg{width:23px!important;height:23px!important}
+ .tabs button.on{color:#1a140b!important;background:linear-gradient(150deg,#f3ead7,#c9a45c)!important;box-shadow:0 8px 18px -10px #c9a45c!important}
+ .tabs button:active{transform:scale(.92)}
+ .bb-hero{padding:14px 12px 18px}
+ .bb-hero-logo{height:110px}
+ .bb-verso blockquote{font-size:15px}
+ .inv-pct{font-size:24px!important}
+ .inv-top{grid-template-columns:1fr 1fr!important}
+ .inv-pctbox{grid-column:1/-1;grid-row:1;flex-direction:row;display:flex!important;align-items:baseline;gap:8px!important;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){.bb-topo-logo:after,.bb-hero-borda,.bb-ola,.inv-bar2 *,.inv .okc{animation:none!important}.inv-bar2 .enche{width:var(--p)}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <dialog id="dlg"></dialog>
 <div id="toast" class="toast hidden" role="status"></div>
-<script src="abertura.js?v=6ae5cf87"></script>
-<script src="app.js?v=6ae5cf87"></script>
+<script src="abertura.js?v=6ae5d33b"></script>
+<script src="app.js?v=6ae5d33b"></script>
 </body>
 </html>

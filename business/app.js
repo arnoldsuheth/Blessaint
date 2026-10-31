@@ -133,7 +133,7 @@ function sair(){ls.del(LS.sess);ls.del(LS.cache);location.reload()}
 const TABS=[['inicio','Início','home'],['estoque','Estoque','box'],['vendas','Vendas','cart'],['orcamentos','Orçamentos','doc'],['financas','Finanças','money'],['ajustes','Ajustes','gear']];
 let tab=(location.hash.slice(1)||'inicio');if(!TABS.some(t=>t[0]===tab))tab='inicio';
 let filtro={estoque:'',vendas:'mes',orc:'Aberto',fin:''};
-function shell(){app.innerHTML=`<header class="top"><img src="${LOGO}" alt="BLESSAINT Business"><span class="sync" id="sync"></span><button type="button" class="tema-btn" id="temaBtn" aria-label="Mudar tema">${temaNome()}</button></header><img class="coracao-fundo" src="../img/enfeites/coracao.png" alt="" aria-hidden="true"><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
+function shell(){app.innerHTML=`<header class="top"><span class="bb-topo-logo"><img src="${LOGO}" alt="BLESSAINT Business"></span><span class="sync" id="sync"></span><button type="button" class="tema-btn" id="temaBtn" aria-label="Mudar tema">${temaNome()}</button></header><img class="coracao-fundo" src="../img/enfeites/coracao.png" alt="" aria-hidden="true"><main id="main"></main><nav class="tabs" aria-label="Seções">${TABS.map(([id,l,i])=>`<button data-tab="${id}">${svg(i)}<span>${l}</span></button>`).join('')}</nav>`;
  $('#temaBtn').onclick=()=>{const l=document.documentElement.dataset.tema!=='linho';if(l)document.documentElement.dataset.tema='linho';else delete document.documentElement.dataset.tema;try{localStorage.setItem('bb_tema',l?'linho':'noite')}catch(e){}$('#temaBtn').textContent=temaNome()};
  app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;history.replaceState(null,'','#'+tab);render();scrollTo(0,0)});setSync(syncState)}
 
@@ -148,7 +148,7 @@ const ANJOS={inicio:['1','top:70px;right:-70px',1],estoque:['2','top:140px;left:
 function pintarAnjo(){return;const el=document.getElementById('anjo');if(!el)return;const [n,pos,fx]=ANJOS[tab]||ANJOS.inicio;const src='../img/anjos/anjo-'+n+'.webp';el.style.cssText=pos+';--fx:'+fx;if(!el.src.endsWith(src))el.src=src}
 let navAtual=null,navBack=[],navFwd=[],navPorHist=false;
 function render(){const m=$('#main');if(!m||!S)return;if(navAtual!==null&&navAtual!==tab&&!navPorHist){navBack.push(navAtual);navFwd=[]}navPorHist=false;navAtual=tab;pintarNav();pintarAnjo();app.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
- m.innerHTML=({inicio:vInicio,estoque:vEstoque,vendas:vVendas,orcamentos:vOrc,financas:vFin,ajustes:vAjustes}[tab])();bindMain(m)}
+ m.innerHTML=({inicio:vInicio,estoque:vEstoque,vendas:vVendas,orcamentos:vOrc,financas:vFin,ajustes:vAjustes}[tab])();bindMain(m);try{if(tab==='inicio'){window.bbLogoParticulas&&bbLogoParticulas(m.querySelector('.bb-hero-logo'));if(!window._bbOla&&window.bbScramble){window._bbOla=1;bbScramble(m.querySelector('.bb-ola'))}}window.bbContar&&bbContar(m)}catch(e){}}
 const totalStock=p=>SIZES.reduce((a,s)=>a+(p.stock?.[s]||0),0);
 const prod=id=>S.products.find(p=>p.id===id);
 const saleTotal=s=>s.items.reduce((a,i)=>a+i.qty*i.price,0)-(s.discount||0);
@@ -172,8 +172,9 @@ function numeros(){const vendidas=S.sales.filter(v=>v.status==='Pago'),vendidoTo
 function lucroMes(k){const vs=S.sales.filter(v=>v.status==='Pago'&&mesKey(v.date)===k);return vs.reduce((a,v)=>a+saleTotal(v)-v.items.reduce((b,i)=>b+i.qty*(prod(i.productId)?.cost||0),0),0)}
 function secInvest(){const n=numeros();if(!n.investido&&!n.vendidoTot)return '';
  return `<div class="sec"><h3>Investimento × retorno</h3><button class="card inv go" data-go="financas">
-  <div class="inv-top"><div><small>Investido em produção</small><strong>${money(n.investido)}</strong><span>${money(n.pago)} já pago</span></div><div><small>Lucro previsto</small><strong class="okc">${money(n.lucroPrev)}</strong><span>se vender todo o estoque</span></div></div>
-  <div class="inv-bar"><i style="width:${n.recuperado}%"></i></div>
+  <div class="inv-top"><div><small>Investido em produção</small><strong data-conta="${n.investido/100}" data-fmt="brl">${money(n.investido)}</strong><span>${money(n.pago)} já pago</span></div><div class="inv-pctbox"><small>Já voltou</small><strong class="inv-pct" data-conta="${n.recuperado}" data-fmt="pct">${n.recuperado}%</strong></div><div class="inv-lucro"><small>Lucro previsto</small><strong class="okc" data-conta="${n.lucroPrev/100}" data-fmt="brl">${money(n.lucroPrev)}</strong><span>se vender todo o estoque</span></div></div>
+  <div class="inv-bar2" style="--p:${Math.max(1.5,n.recuperado)}%"><div class="trilha"><span class="grade"></span><i class="enche"><span class="listras"></span><span class="ponta"></span></i><span class="scan"></span></div>
+   <div class="marcas"><span style="left:0">0</span><span style="left:25%">25%</span><span style="left:50%">50%</span><span style="left:75%">75%</span><span style="left:100%" class="m-fim"><svg viewBox="0 0 16 16" width="13" height="13"><path d="M3 15V2M3 2.5h9l-2 3 2 3H3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>pago</span></div></div>
   <div class="inv-sub"><span>${n.recuperado}% do investimento já voltou em vendas (${money(n.vendidoTot)})</span><span>${n.falta?'Faltam <b>'+n.pecasFalta+' peças</b> para pagar o investimento':'<b>Investimento pago!</b> Daqui pra frente é lucro'}</span></div>
   <div class="inv-sub"><span>Estoque vale ${money(n.emEstoque)} em preço de venda · ${n.pecas} peças</span><span class="go-t">ver finanças ›</span></div></button></div>`}
 
@@ -202,8 +203,9 @@ function vInicio(){const k=mesKey(today()),r=mesResumo(k);
  const meses=[...Array(6)].map((_,i)=>{const d=new Date();d.setDate(15);d.setMonth(d.getMonth()-5+i);return d.toISOString().slice(0,7)});
  const vals=meses.map(m=>mesResumo(m).rec);const max=Math.max(...vals,1);
  const lm=lucroMes(k),[pv,pr]=provAtual();
- return `<h1 class="page">Olá, Arnold</h1><p class="lead">Resumo de ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}.</p>
- <figure class="verso"><blockquote>“${esc(pv)}”</blockquote><figcaption>${pr}</figcaption></figure>
+ const _h=new Date().getHours();return `<section class="bb-hero"><span class="bb-hero-borda" aria-hidden="true"></span><div class="bb-hero-logo" aria-hidden="true"></div>
+ <p class="bb-hero-eyebrow">${_h<12?'Bom dia':_h<18?'Boa tarde':'Boa noite'} · resumo de ${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}</p><h1 class="bb-ola">Olá, Arnold</h1>
+ <figure class="bb-verso"><blockquote>“${esc(pv)}”</blockquote><figcaption>${pr}</figcaption></figure></section>
  <div class="grid4"><button class="kpi go" data-go="vendas:mes"><small>Vendido no mês</small><strong>${money(r.rec)}</strong><span>${r.pecas} peça(s) · ${r.vendas.length} venda(s) ›</span></button>
  <button class="kpi go" data-go="vendas:mes"><small>Lucro do mês</small><strong class="${lm<0?'badc':'okc'}">${money(lm)}</strong><span>vendas − custo das peças ›</span></button>
  <button class="kpi go" data-go="vendas:pend"><small>A receber</small><strong>${money(aReceber)}</strong><span>vendas pendentes ›</span></button>
